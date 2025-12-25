@@ -1,5 +1,4 @@
 import 'package:cocos_mobile_application/Settings.dart';
-import 'package:cocos_mobile_application/WebsiteMaker/webQuestion1.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -18,11 +17,19 @@ class DashboardPage extends StatelessWidget {
                 Text("Good morning,\nFlorian",
                     style: GoogleFonts.poppins(fontSize: 20)),
                 const Spacer(),
-                Image.asset("images/pajamas_profile.png"),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset("images/Vector.png"),
+
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Settings(),
+                      ),
+                    );
+                  },
+                  child: Image.asset("images/pajamas_profile.png"),
                 )
+                 
               ],
             ),
             const SizedBox(height: 44),

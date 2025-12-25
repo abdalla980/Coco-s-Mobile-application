@@ -8,6 +8,7 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(child: Text("Settings", style: GoogleFonts.poppins(fontSize: 15,fontWeight: FontWeight.bold),)),
+      
     );
   }
 }
