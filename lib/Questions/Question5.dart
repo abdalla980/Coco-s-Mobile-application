@@ -1,8 +1,9 @@
+import 'package:cocos_mobile_application/HomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Question1 extends StatelessWidget {
-  const Question1({super.key});
+class Question5 extends StatelessWidget {
+  const Question5({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class Question1 extends StatelessWidget {
                     )
                 ),
                 child:
-                Text("1.What type of business do you run?",
+                Text("5.What are your main goals with this app?",
                     style: GoogleFonts.poppins(fontSize: 20,
                         fontWeight: FontWeight.w500,
                         color: Colors.black
@@ -51,10 +52,10 @@ class Question1 extends StatelessWidget {
                   height: 50,
                   child:
                   FloatingActionButton.extended(onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=> Question1())
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> Homescreen())
                     );
                   },
-                    label: Text("Next",
+                    label: Text("Submit",
                         style: GoogleFonts.poppins(
                             fontSize: 23,
                             fontWeight: FontWeight.bold,

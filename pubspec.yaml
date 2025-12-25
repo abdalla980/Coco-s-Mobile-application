@@ -62,6 +62,9 @@ flutter:
 
   assets:
     - images/cocoIcon.png
+    - images/pajamas_profile.png
+    - images/Vector.png
+    - images/Camera-icon.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

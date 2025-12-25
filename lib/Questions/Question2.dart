@@ -1,8 +1,9 @@
+import 'package:cocos_mobile_application/Questions/Question3.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Question1 extends StatelessWidget {
-  const Question1({super.key});
+class Question2 extends StatelessWidget {
+  const Question2({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class Question1 extends StatelessWidget {
                     )
                 ),
                 child:
-                Text("1.What type of business do you run?",
+                Text("2.Who is your target audience or ideal customer?",
                     style: GoogleFonts.poppins(fontSize: 20,
                         fontWeight: FontWeight.w500,
                         color: Colors.black
@@ -39,7 +40,10 @@ class Question1 extends StatelessWidget {
                   decoration: InputDecoration(
                     labelText: 'Answer',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(7),
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: BorderSide(
+                            color: Colors.green,
+                            width:2)
                     ),
 
                   )
@@ -51,7 +55,7 @@ class Question1 extends StatelessWidget {
                   height: 50,
                   child:
                   FloatingActionButton.extended(onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=> Question1())
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> Question3())
                     );
                   },
                     label: Text("Next",

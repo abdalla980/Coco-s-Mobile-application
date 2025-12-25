@@ -1,3 +1,4 @@
+import 'package:cocos_mobile_application/Questions/Question2.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -40,6 +41,9 @@ class Question1 extends StatelessWidget {
                         labelText: 'Answer',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(7),
+                            borderSide: BorderSide(
+                                color: Colors.green,
+                                width:2)
                         ),
 
                       )
@@ -51,7 +55,7 @@ class Question1 extends StatelessWidget {
                           height: 50,
                           child:
                           FloatingActionButton.extended(onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Question1())
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Question2())
                             );
                           },
                             label: Text("Next",
