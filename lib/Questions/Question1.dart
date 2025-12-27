@@ -2,77 +2,185 @@ import 'package:cocos_mobile_application/Questions/Question2.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Question1 extends StatelessWidget {
+class Question1 extends StatefulWidget {
   const Question1({super.key});
+
+  @override
+  State<Question1> createState() => _Question1State();
+}
+
+class _Question1State extends State<Question1> {
+  final _customController = TextEditingController();
+  String? _selectedOption;
+  bool _showCustomField = false;
+
+  final List<String> _options = [
+    'Restaurant',
+    'Retail Store',
+    'Service Business',
+    'E-commerce',
+  ];
+
+  @override
+  void dispose() {
+    _customController.dispose();
+    super.dispose();
+  }
+
+  void _selectOption(String option) {
+    setState(() {
+      _selectedOption = option;
+      _showCustomField = false;
+      _customController.clear();
+    });
+  }
+
+  void _selectCustom() {
+    setState(() {
+      _selectedOption = 'Custom';
+      _showCustomField = true;
+    });
+  }
+
+  void _next() {
+    String answer = '';
+    if (_selectedOption == 'Custom') {
+      answer = _customController.text.trim();
+    } else {
+      answer = _selectedOption ?? '';
+    }
+
+    if (answer.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select or enter an answer')),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Question2(answer1: answer)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey.shade200,
-        body: Padding(
+      backgroundColor: Colors.grey.shade200,
+      body: SafeArea(
+        child: Padding(
           padding: const EdgeInsets.all(32),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children:[
-                    const SizedBox(height: 24),
-                Container(
-                  margin: EdgeInsets.only(right: 8, top: 32) ,
-                padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-            color: Colors.green.shade100,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 24),
+              Text(
+                "Let's Start..",
+                style: GoogleFonts.poppins(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              LinearProgressIndicator(
+                value: 0.2,
+                backgroundColor: Colors.grey.shade300,
                 color: Colors.green,
-                width:2
-            )
-        ),
-                      child:
-                      Text("1.What type of business do you run?",
-                          style: GoogleFonts.poppins(fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black
-                          )
+                minHeight: 6,
+              ),
+              const SizedBox(height: 32),
+              Text(
+                "What type of business do you run?",
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 32),
+              // Pill buttons
+              ..._options.map(
+                (option) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _buildPillButton(option),
+                ),
+              ),
+              const SizedBox(height: 8),
+              _buildPillButton('Custom Answer', isCustom: true),
+              if (_showCustomField) ...[
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _customController,
+                  decoration: InputDecoration(
+                    labelText: 'Your answer',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(
+                        color: Colors.green,
+                        width: 2,
                       ),
-                ),
-                      const SizedBox(height: 150),
-
-                      TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Answer',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                            borderSide: BorderSide(
-                                color: Colors.green,
-                                width:2)
-                        ),
-
-                      )
+                    ),
                   ),
-                      Spacer(),
-
-                      SizedBox(
-                          width: 300,
-                          height: 50,
-                          child:
-                          FloatingActionButton.extended(onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Question2())
-                            );
-                          },
-                            label: Text("Next",
-                                style: GoogleFonts.poppins(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white
-                                )),
-                            backgroundColor: Colors.green,
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                            extendedPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                          )
-
-                      ),                ],
                 ),
-            )
+              ],
+              const Spacer(),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: FloatingActionButton.extended(
+                  onPressed: _next,
+                  label: Text(
+                    "Next",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  backgroundColor: Colors.green,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPillButton(String text, {bool isCustom = false}) {
+    final isSelected = isCustom
+        ? _selectedOption == 'Custom'
+        : _selectedOption == text;
+
+    return GestureDetector(
+      onTap: isCustom ? _selectCustom : () => _selectOption(text),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.green : Colors.white,
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(
+            color: isSelected ? Colors.green : Colors.grey.shade400,
+            width: 1.5,
+          ),
+        ),
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: isSelected ? Colors.white : Colors.black87,
+          ),
+        ),
+      ),
     );
   }
 }

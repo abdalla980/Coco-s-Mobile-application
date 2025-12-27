@@ -2,74 +2,193 @@ import 'package:cocos_mobile_application/Questions/Question4.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Question3 extends StatelessWidget {
-  const Question3({super.key});
+class Question3 extends StatefulWidget {
+  final String answer1;
+  final String answer2;
+  const Question3({super.key, required this.answer1, required this.answer2});
+
+  @override
+  State<Question3> createState() => _Question3State();
+}
+
+class _Question3State extends State<Question3> {
+  final _customController = TextEditingController();
+  String? _selectedOption;
+  bool _showCustomField = false;
+
+  final List<String> _options = [
+    'Food & Beverage',
+    'Clothing & Apparel',
+    'Professional Services',
+    'Digital Products',
+  ];
+
+  @override
+  void dispose() {
+    _customController.dispose();
+    super.dispose();
+  }
+
+  void _selectOption(String option) {
+    setState(() {
+      _selectedOption = option;
+      _showCustomField = false;
+      _customController.clear();
+    });
+  }
+
+  void _selectCustom() {
+    setState(() {
+      _selectedOption = 'Custom';
+      _showCustomField = true;
+    });
+  }
+
+  void _next() {
+    String answer = '';
+    if (_selectedOption == 'Custom') {
+      answer = _customController.text.trim();
+    } else {
+      answer = _selectedOption ?? '';
+    }
+
+    if (answer.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select or enter an answer')),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Question4(
+          answer1: widget.answer1,
+          answer2: widget.answer2,
+          answer3: answer,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey.shade200,
-        body: Padding(
+      backgroundColor: Colors.grey.shade200,
+      body: SafeArea(
+        child: Padding(
           padding: const EdgeInsets.all(32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children:[
+            children: [
               const SizedBox(height: 24),
-              Container(
-                margin: EdgeInsets.only(right: 8, top: 32) ,
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    color: Colors.green.shade100,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                        color: Colors.green,
-                        width:2
-                    )
-                ),
-                child:
-                Text("3.What products or services do you offer?",
-                    style: GoogleFonts.poppins(fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black
-                    )
+              Text(
+                "Almost There...",
+                style: GoogleFonts.poppins(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 150),
-
-              TextField(
+              const SizedBox(height: 8),
+              LinearProgressIndicator(
+                value: 0.6,
+                backgroundColor: Colors.grey.shade300,
+                color: Colors.green,
+                minHeight: 6,
+              ),
+              const SizedBox(height: 32),
+              Text(
+                "What products or services do you offer?",
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 32),
+              // Pill buttons
+              ..._options.map(
+                (option) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _buildPillButton(option),
+                ),
+              ),
+              const SizedBox(height: 8),
+              _buildPillButton('Custom Answer', isCustom: true),
+              if (_showCustomField) ...[
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _customController,
                   decoration: InputDecoration(
-                    labelText: 'Answer',
+                    labelText: 'Your answer',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(7),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-
-                  )
-              ),
-              Spacer(),
-
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(
+                        color: Colors.green,
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+              const Spacer(),
               SizedBox(
-                  width: 300,
-                  height: 50,
-                  child:
-                  FloatingActionButton.extended(onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=> Question4())
-                    );
-                  },
-                    label: Text("Next",
-                        style: GoogleFonts.poppins(
-                            fontSize: 23,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white
-                        )),
-                    backgroundColor: Colors.green,
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    extendedPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  )
-
-              ),                ],
+                width: double.infinity,
+                height: 50,
+                child: FloatingActionButton.extended(
+                  onPressed: _next,
+                  label: Text(
+                    "Next",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  backgroundColor: Colors.green,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ],
           ),
-        )
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPillButton(String text, {bool isCustom = false}) {
+    final isSelected = isCustom
+        ? _selectedOption == 'Custom'
+        : _selectedOption == text;
+
+    return GestureDetector(
+      onTap: isCustom ? _selectCustom : () => _selectOption(text),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.green : Colors.white,
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(
+            color: isSelected ? Colors.green : Colors.grey.shade400,
+            width: 1.5,
+          ),
+        ),
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: isSelected ? Colors.white : Colors.black87,
+          ),
+        ),
+      ),
     );
   }
 }

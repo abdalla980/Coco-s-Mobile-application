@@ -1,4 +1,5 @@
 import 'package:cocos_mobile_application/Settings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -7,102 +8,237 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text("Good morning,\nFlorian",
-                    style: GoogleFonts.poppins(fontSize: 20)),
-                const Spacer(),
+    final user = FirebaseAuth.instance.currentUser;
+    final String userName = user?.displayName ?? "User";
 
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Settings(),
-                      ),
-                    );
-                  },
-                  child: Image.asset("images/pajamas_profile.png"),
-                )
-                 
-              ],
-            ),
-            const SizedBox(height: 44),
-            Container(
-              padding: const EdgeInsets.all(20),
-              width: double.infinity,
-              height: 150,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.black, width: 0.5),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header with greeting and icons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Weekly Reach",
-                      style: GoogleFonts.poppins(
-                          fontSize: 16, fontWeight: FontWeight.w500)),
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("2,405",
-                          style: GoogleFonts.poppins(
-                              fontSize: 40, fontWeight: FontWeight.bold)),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("+12%",
-                            style: GoogleFonts.poppins(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.green)),
+                      Text(
+                        "Good Morning,",
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      Text(
+                        userName,
+                        style: GoogleFonts.poppins(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
-                  const Spacer(),
-                  Text("Views across Google & Instagram",
-                      style: GoogleFonts.poppins(
-                          fontSize: 10, fontWeight: FontWeight.w500)),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.notifications_outlined,
+                          color: Colors.grey.shade700,
+                          size: 26,
+                        ),
+                        onPressed: () {},
+                      ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Settings()),
+                          );
+                        },
+                        child: CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Colors.grey.shade300,
+                          child: Icon(
+                            Icons.person_outline,
+                            color: Colors.grey.shade700,
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
-            ),
-            const SizedBox(height: 42),
-            CircleAvatar(
-              radius: 100,
-              backgroundColor: Colors.green,
-              child: Center(
+              const SizedBox(height: 32),
+
+              // Weekly Reach Card
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.shade300,
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.asset("images/Camera-icon.png"),
-                    Text("Capture Work",
-                        style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400)),
-                    Text("Create New Post",
-                        style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w300)),
+                    Text(
+                      "WEEKLY REACH",
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey.shade500,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          "2,405",
+                          style: GoogleFonts.poppins(
+                            fontSize: 48,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: Text(
+                            "+12%",
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.green,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        // Mini bar chart
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            _buildBarChartItem(30, Colors.grey.shade300),
+                            const SizedBox(width: 4),
+                            _buildBarChartItem(50, Colors.grey.shade300),
+                            const SizedBox(width: 4),
+                            _buildBarChartItem(40, Colors.grey.shade300),
+                            const SizedBox(width: 4),
+                            _buildBarChartItem(65, Colors.green.shade200),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Views across Google & Instagram",
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(42.0),
-              child: Text(
-                "Tap the button to snap a photo of your latest installation",
-                style: GoogleFonts.poppins(
-                    fontSize: 14, fontWeight: FontWeight.w400),
+              const SizedBox(height: 48),
+
+              // Capture Work Button
+              Center(
+                child: Container(
+                  width: 220,
+                  height: 220,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.green,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.green.withOpacity(0.3),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(110),
+                      onTap: () {},
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.camera_alt_outlined,
+                            color: Colors.white,
+                            size: 60,
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            "Capture Work",
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            "Create New Post",
+                            style: GoogleFonts.poppins(
+                              color: Colors.white.withOpacity(0.9),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 32),
+
+              // Instruction text
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: Text(
+                    "Tap the button to snap a photo of your latest installation.",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      color: Colors.grey.shade600,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildBarChartItem(double height, Color color) {
+    return Container(
+      width: 8,
+      height: height,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(4),
       ),
     );
   }

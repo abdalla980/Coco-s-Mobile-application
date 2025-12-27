@@ -1,5 +1,3 @@
-import 'package:cocos_mobile_application/main.dart';
-import 'package:cocos_mobile_application/welcomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -10,30 +8,32 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   @override
-void initState(){
+  void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-    Future.delayed(const Duration(seconds: 2),(){
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_)=>const Welcomepage()));
-    });
   }
 
   @override
-void dispose(){
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-    overlays: SystemUiOverlay.values);
+  void dispose() {
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: SystemUiOverlay.values,
+    );
+    super.dispose();
   }
 
-
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-        body:  Center(
-          child: Image.asset("images/cocoIcon.png", width: MediaQuery.of(context).size.width * 0.6),
+      body: Center(
+        child: Image.asset(
+          "images/cocoIcon.png",
+          width: MediaQuery.of(context).size.width * 0.6,
         ),
+      ),
     );
   }
 }

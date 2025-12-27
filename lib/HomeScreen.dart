@@ -2,7 +2,6 @@ import 'package:cocos_mobile_application/Dashboard.dart';
 import 'package:cocos_mobile_application/Settings.dart';
 import 'package:cocos_mobile_application/WebsiteMaker/webQuestion1.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -28,9 +27,18 @@ class _HomescreenState extends State<Homescreen> {
         currentIndex: myIndex,
         onTap: (index) => setState(() => myIndex = index),
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.query_stats), label: "Dashboard"),
-          BottomNavigationBarItem(icon: Icon(Icons.computer), label: "Website Builder"),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.query_stats),
+            label: "Dashboard",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.computer),
+            label: "Website Builder",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: "Settings",
+          ),
         ],
       ),
     );
