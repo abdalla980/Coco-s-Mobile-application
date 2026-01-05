@@ -28,6 +28,12 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We need camera access to capture photos of your work</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need photo library access to select images</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to tag your posts</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
