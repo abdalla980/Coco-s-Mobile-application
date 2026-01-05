@@ -66,8 +66,8 @@ This project is both a learning experience and a real-world solution we’re exc
 ## 📦 Installation
 
 ```bash
-git clone https://github.com/abdalla980/Coco-s-Mobile-application.git
-cd Coco-s-Mobile-application
+git clone https://github.com/abdalla980/cocos_mobile_application.git
+cd cocos_mobile_application
 flutter pub get
 
 flutter run 
