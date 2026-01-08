@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -29,10 +30,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Image.asset(
-          "images/cocoIcon.png",
-          width: MediaQuery.of(context).size.width * 0.6,
-        ),
+        child: Text("Someone is always lying", style: GoogleFonts.bebasNeue(),),
       ),
     );
   }
