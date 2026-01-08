@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cocos_mobile_application/connect_social_page.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -24,7 +25,7 @@ class Settings extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 32),
-              
+
               // Profile Section
               _buildSectionTitle("Account"),
               const SizedBox(height: 16),
@@ -37,7 +38,7 @@ class Settings extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 24),
-              
+
               // Subscriptions Section
               _buildSectionTitle("Subscription"),
               const SizedBox(height: 16),
@@ -50,7 +51,7 @@ class Settings extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 24),
-              
+
               // Social Media Section
               _buildSectionTitle("Connections"),
               const SizedBox(height: 16),
@@ -59,7 +60,12 @@ class Settings extends StatelessWidget {
                 title: "Connect Social Media",
                 subtitle: "Link your social media accounts",
                 onTap: () {
-                  // Placeholder - Social media connection functionality
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ConnectSocialPage(),
+                    ),
+                  );
                 },
               ),
             ],
@@ -90,10 +96,7 @@ class Settings extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.green.shade200,
-          width: 2,
-        ),
+        border: Border.all(color: Colors.green.shade200, width: 2),
         boxShadow: [
           BoxShadow(
             color: Colors.green.withOpacity(0.1),
@@ -118,11 +121,7 @@ class Settings extends StatelessWidget {
                     color: Colors.green.shade50,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(
-                    icon,
-                    color: Colors.green.shade700,
-                    size: 28,
-                  ),
+                  child: Icon(icon, color: Colors.green.shade700, size: 28),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -149,10 +148,7 @@ class Settings extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(
-                  Icons.chevron_right,
-                  color: Colors.grey.shade400,
-                ),
+                Icon(Icons.chevron_right, color: Colors.grey.shade400),
               ],
             ),
           ),

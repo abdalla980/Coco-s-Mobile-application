@@ -1,4 +1,7 @@
 import 'package:cocos_mobile_application/Settings.dart';
+import 'package:cocos_mobile_application/social_connection_service.dart';
+import 'package:cocos_mobile_application/camera_capture_page.dart';
+import 'package:cocos_mobile_application/connect_social_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -176,7 +179,55 @@ class DashboardPage extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(110),
-                      onTap: () {},
+                      onTap: () async {
+                        final socialService = SocialConnectionService();
+                        final hasConnection = await socialService
+                            .hasAnyConnection();
+
+                        if (!hasConnection) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text(
+                                "Connect Social Media",
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              content: Text(
+                                "Please connect at least one social media account to use this feature.",
+                                style: GoogleFonts.poppins(),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ConnectSocialPage(),
+                                      ),
+                                    );
+                                  },
+                                  child: Text("Connect Now"),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text("Cancel"),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CameraCaptureScreen(),
+                            ),
+                          );
+                        }
+                      },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
