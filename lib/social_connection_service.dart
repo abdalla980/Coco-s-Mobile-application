@@ -1,14 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:cocos_mobile_application/config/env_config.dart';
+import 'package:cocos_mobile_application/facebook_auth_service.dart';
+import 'package:cocos_mobile_application/instagram_api_service.dart';
+import 'package:cocos_mobile_application/facebook_api_service.dart';
 
 class SocialConnectionService {
   // Keys for SharedPreferences
   static const String _instagramKey = 'instagram_connection';
   static const String _facebookKey = 'facebook_connection';
 
-  // Mock OAuth: Connect Instagram with account type verification
+  // Services for real API integration
+  final FacebookAuthService _authService = FacebookAuthService();
+  final InstagramApiService _instagramService = InstagramApiService();
+  final FacebookApiService _facebookService = FacebookApiService();
+
+  // Connect Instagram - uses real API if enabled, otherwise mock
   Future<bool> connectInstagram(BuildContext context) async {
+    if (EnvConfig.enableRealInstagram) {
+      return await _connectInstagramReal(context);
+    } else {
+      return await _connectInstagramMock(context);
+    }
+  }
+
+  // Real Instagram OAuth connection
+  Future<bool> _connectInstagramReal(BuildContext context) async {
+    try {
+      // Perform Facebook OAuth with Instagram permissions
+      final accessToken = await _authService.loginWithInstagramPermissions();
+
+      if (accessToken == null) {
+        return false; // User cancelled or error occurred
+      }
+
+      // Get user profile
+      final profile = await _authService.getUserProfile();
+
+      // Store connection data
+      final prefs = await SharedPreferences.getInstance();
+      final connectionData = {
+        'username': profile?['name'] ?? 'Instagram User',
+        'accountType': 'Business', // Real API only works with Business/Creator
+        'connectedAt': DateTime.now().toIso8601String(),
+        'profilePic': profile?['picture']?['data']?['url'] ?? '',
+        'accessToken': accessToken,
+        'isRealConnection': true,
+      };
+      await prefs.setString(_instagramKey, json.encode(connectionData));
+      return true;
+    } catch (e) {
+      debugPrint('Error connecting Instagram (real): $e');
+      return false;
+    }
+  }
+
+  // Mock Instagram OAuth connection (existing implementation)
+  Future<bool> _connectInstagramMock(BuildContext context) async {
     // Show mock login dialog
     final credentials = await _showMockLoginDialog(context, 'Instagram');
     if (credentials == null) return false;
@@ -30,13 +79,83 @@ class SocialConnectionService {
       'accountType': accountType,
       'connectedAt': DateTime.now().toIso8601String(),
       'profilePic': 'https://via.placeholder.com/100', // Mock profile pic
+      'isRealConnection': false,
     };
     await prefs.setString(_instagramKey, json.encode(connectionData));
     return true;
   }
 
-  // Mock OAuth: Connect Facebook with page selection
+  // Connect Facebook - uses real API if enabled, otherwise mock
   Future<bool> connectFacebook(BuildContext context) async {
+    if (EnvConfig.enableRealFacebook) {
+      return await _connectFacebookReal(context);
+    } else {
+      return await _connectFacebookMock(context);
+    }
+  }
+
+  // Real Facebook OAuth connection
+  Future<bool> _connectFacebookReal(BuildContext context) async {
+    try {
+      // Perform Facebook OAuth with Page permissions
+      final accessToken = await _authService.loginWithFacebookPermissions();
+
+      if (accessToken == null) {
+        return false; // User cancelled or error occurred
+      }
+
+      // Get user's Facebook Pages
+      final pages = await _facebookService.getUserPages(
+        userAccessToken: accessToken,
+      );
+
+      if (pages.isEmpty) {
+        // No pages found - show error
+        if (context.mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text('No Facebook Pages'),
+              content: Text(
+                'You need to have at least one Facebook Page to post content.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
+        return false;
+      }
+
+      // Show page selection dialog
+      final selectedPage = await _showRealPageSelectionDialog(context, pages);
+      if (selectedPage == null) return false;
+
+      // Store connection data
+      final prefs = await SharedPreferences.getInstance();
+      final connectionData = {
+        'username': selectedPage['name'],
+        'pageName': selectedPage['name'],
+        'pageId': selectedPage['id'],
+        'pageAccessToken': selectedPage['access_token'],
+        'connectedAt': DateTime.now().toIso8601String(),
+        'profilePic': '',
+        'isRealConnection': true,
+      };
+      await prefs.setString(_facebookKey, json.encode(connectionData));
+      return true;
+    } catch (e) {
+      debugPrint('Error connecting Facebook (real): $e');
+      return false;
+    }
+  }
+
+  // Mock Facebook OAuth connection (existing implementation)
+  Future<bool> _connectFacebookMock(BuildContext context) async {
     // Show mock login dialog
     final credentials = await _showMockLoginDialog(context, 'Facebook');
     if (credentials == null) return false;
@@ -52,6 +171,7 @@ class SocialConnectionService {
       'pageName': pageName,
       'connectedAt': DateTime.now().toIso8601String(),
       'profilePic': 'https://via.placeholder.com/100', // Mock profile pic
+      'isRealConnection': false,
     };
     await prefs.setString(_facebookKey, json.encode(connectionData));
     return true;
@@ -231,7 +351,7 @@ class SocialConnectionService {
     );
   }
 
-  // Page selection dialog for Facebook
+  // Page selection dialog for Facebook (mock)
   Future<String?> _showPageSelectionDialog(BuildContext context) async {
     final List<String> mockPages = [
       'My Business Page',
@@ -249,6 +369,38 @@ class SocialConnectionService {
               .map(
                 (page) => ListTile(
                   title: Text(page),
+                  leading: Icon(Icons.pages),
+                  onTap: () => Navigator.pop(context, page),
+                ),
+              )
+              .toList(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Real page selection dialog - shows actual Facebook Pages from API
+  Future<Map<String, dynamic>?> _showRealPageSelectionDialog(
+    BuildContext context,
+    List<Map<String, dynamic>> pages,
+  ) async {
+    return showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Select Facebook Page'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: pages
+              .map(
+                (page) => ListTile(
+                  title: Text(page['name'] ?? 'Unknown Page'),
+                  subtitle: Text('ID: ${page['id']}'),
                   leading: Icon(Icons.pages),
                   onTap: () => Navigator.pop(context, page),
                 ),

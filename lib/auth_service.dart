@@ -11,6 +11,9 @@ class AuthService {
   // Get current user
   User? get currentUser => _auth.currentUser;
 
+  // Get Firestore instance
+  FirebaseFirestore get firestore => _firestore;
+
   // Sign in with email and password
   Future<UserCredential> signInWithEmailAndPassword(
     String email,
