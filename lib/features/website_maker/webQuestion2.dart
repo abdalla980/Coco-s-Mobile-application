@@ -45,32 +45,34 @@ class webQuestion2 extends StatelessWidget {
             ),
             Spacer(),
 
-            SizedBox(
-              width: 300,
-              height: 50,
-              child: FloatingActionButton.extended(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => webQuestion3()),
-                  );
-                },
-                label: Text(
-                  "Next",
-                  style: GoogleFonts.poppins(
-                    fontSize: 23,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+            Center(
+              child: SizedBox(
+                width: 300,
+                height: 50,
+                child: FloatingActionButton.extended(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => webQuestion3()),
+                    );
+                  },
+                  label: Text(
+                    "Next",
+                    style: GoogleFonts.poppins(
+                      fontSize: 23,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                backgroundColor: Colors.green,
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                extendedPadding: EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
+                  backgroundColor: Colors.green,
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  extendedPadding: EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                 ),
               ),
             ),

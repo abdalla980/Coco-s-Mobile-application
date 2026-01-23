@@ -1,8 +1,10 @@
+import 'package:cocos_mobile_application/features/dashboard/HomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cocos_mobile_application/features/social/connect_social_page.dart';
 import 'package:cocos_mobile_application/core/services/auth_service.dart';
 import 'package:cocos_mobile_application/features/onboarding/welcomePage.dart';
+import 'package:cocos_mobile_application/features/dashboard/Dashboard.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -11,22 +13,34 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
+      appBar: AppBar(
+        backgroundColor: Colors.grey.shade200,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.grey.shade800),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const Homescreen()),
+            );
+          },
+        ),
+        title: Text(
+          "Settings",
+          style: GoogleFonts.poppins(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
-              Text(
-                "Settings",
-                style: GoogleFonts.poppins(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 8),
 
               // Profile Section
               _buildSectionTitle("Account"),
