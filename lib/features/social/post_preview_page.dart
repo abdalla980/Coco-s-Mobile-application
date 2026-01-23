@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cocos_mobile_application/location_service.dart';
-import 'package:cocos_mobile_application/ai_caption_service.dart';
-import 'package:cocos_mobile_application/social_connection_service.dart';
-import 'package:cocos_mobile_application/config/env_config.dart';
-import 'package:cocos_mobile_application/instagram_api_service.dart';
-import 'package:cocos_mobile_application/facebook_api_service.dart';
-import 'package:cocos_mobile_application/auth_service.dart';
+import 'package:cocos_mobile_application/core/services/location_service.dart';
+import 'package:cocos_mobile_application/core/services/ai_caption_service.dart';
+import 'package:cocos_mobile_application/core/services/social_connection_service.dart';
+import 'package:cocos_mobile_application/core/config/env_config.dart';
+import 'package:cocos_mobile_application/core/services/instagram_api_service.dart';
+import 'package:cocos_mobile_application/core/services/facebook_api_service.dart';
+import 'package:cocos_mobile_application/core/services/auth_service.dart';
 
 class PostPreviewPage extends StatefulWidget {
   final File imageFile;

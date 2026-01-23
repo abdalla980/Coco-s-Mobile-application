@@ -1,24 +1,37 @@
-import 'package:cocos_mobile_application/Questions/Question2.dart';
+import 'package:cocos_mobile_application/features/dashboard/HomeScreen.dart';
+import 'package:cocos_mobile_application/core/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Question1 extends StatefulWidget {
-  const Question1({super.key});
+class Question5 extends StatefulWidget {
+  final String answer1;
+  final String answer2;
+  final String answer3;
+  final String answer4;
+  const Question5({
+    super.key,
+    required this.answer1,
+    required this.answer2,
+    required this.answer3,
+    required this.answer4,
+  });
 
   @override
-  State<Question1> createState() => _Question1State();
+  State<Question5> createState() => _Question5State();
 }
 
-class _Question1State extends State<Question1> {
+class _Question5State extends State<Question5> {
   final _customController = TextEditingController();
+  final _authService = AuthService();
   String? _selectedOption;
   bool _showCustomField = false;
+  bool _isLoading = false;
 
   final List<String> _options = [
-    'Restaurant',
-    'Retail Store',
-    'Service Business',
-    'E-commerce',
+    'Increase Sales',
+    'Build Awareness',
+    'Customer Engagement',
+    'Market Expansion',
   ];
 
   @override
@@ -42,7 +55,7 @@ class _Question1State extends State<Question1> {
     });
   }
 
-  void _next() {
+  Future<void> _submitAnswers() async {
     String answer = '';
     if (_selectedOption == 'Custom') {
       answer = _customController.text.trim();
@@ -57,10 +70,43 @@ class _Question1State extends State<Question1> {
       return;
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Question2(answer1: answer)),
-    );
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Prepare answers map
+      final answers = {
+        'businessType': widget.answer1,
+        'targetAudience': widget.answer2,
+        'productsServices': widget.answer3,
+        'brandTone': widget.answer4,
+        'mainGoals': answer,
+      };
+
+      // Save to Firestore
+      await _authService.saveOnboardingAnswers(answers);
+
+      // Navigate to HomeScreen
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Homescreen()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving answers: ${e.toString()}')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -75,7 +121,7 @@ class _Question1State extends State<Question1> {
             children: [
               const SizedBox(height: 24),
               Text(
-                "Let's Start..",
+                "And we are done...",
                 style: GoogleFonts.poppins(
                   fontSize: 28,
                   fontWeight: FontWeight.w600,
@@ -83,14 +129,14 @@ class _Question1State extends State<Question1> {
               ),
               const SizedBox(height: 8),
               LinearProgressIndicator(
-                value: 0.2,
+                value: 1.0,
                 backgroundColor: Colors.grey.shade300,
                 color: Colors.green,
                 minHeight: 6,
               ),
               const SizedBox(height: 32),
               Text(
-                "What type of business do you run?",
+                "What are your main goals with this app?",
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
@@ -130,15 +176,17 @@ class _Question1State extends State<Question1> {
                 width: double.infinity,
                 height: 50,
                 child: FloatingActionButton.extended(
-                  onPressed: _next,
-                  label: Text(
-                    "Next",
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
+                  onPressed: _isLoading ? null : _submitAnswers,
+                  label: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : Text(
+                          "Submit",
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                   backgroundColor: Colors.green,
                   elevation: 0,
                   shape: RoundedRectangleBorder(

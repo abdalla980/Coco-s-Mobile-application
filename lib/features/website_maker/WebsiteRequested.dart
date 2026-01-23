@@ -1,5 +1,5 @@
-import 'package:cocos_mobile_application/Dashboard.dart';
-import 'package:cocos_mobile_application/Settings.dart';
+import 'package:cocos_mobile_application/features/dashboard/Dashboard.dart';
+import 'package:cocos_mobile_application/features/settings/Settings.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

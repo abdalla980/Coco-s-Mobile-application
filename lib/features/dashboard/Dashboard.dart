@@ -1,7 +1,7 @@
-import 'package:cocos_mobile_application/Settings.dart';
-import 'package:cocos_mobile_application/social_connection_service.dart';
-import 'package:cocos_mobile_application/camera_capture_page.dart';
-import 'package:cocos_mobile_application/connect_social_page.dart';
+import 'package:cocos_mobile_application/features/settings/Settings.dart';
+import 'package:cocos_mobile_application/core/services/social_connection_service.dart';
+import 'package:cocos_mobile_application/features/social/camera_capture_page.dart';
+import 'package:cocos_mobile_application/features/social/connect_social_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

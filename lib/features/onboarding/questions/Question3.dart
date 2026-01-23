@@ -1,4 +1,4 @@
-import 'package:cocos_mobile_application/Questions/Question4.dart';
+import 'package:cocos_mobile_application/features/onboarding/questions/Question4.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:cocos_mobile_application/config/env_config.dart';
-import 'package:cocos_mobile_application/facebook_auth_service.dart';
-import 'package:cocos_mobile_application/instagram_api_service.dart';
-import 'package:cocos_mobile_application/facebook_api_service.dart';
+import 'package:cocos_mobile_application/core/services/facebook_auth_service.dart';
+import 'package:cocos_mobile_application/core/services/instagram_api_service.dart';
+import 'package:cocos_mobile_application/core/services/facebook_api_service.dart';
 
 class SocialConnectionService {
   // Keys for SharedPreferences

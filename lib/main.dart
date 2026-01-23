@@ -1,14 +1,14 @@
 import 'dart:io';
-import 'package:cocos_mobile_application/HomeScreen.dart';
-import 'package:cocos_mobile_application/auth_service.dart';
-import 'package:cocos_mobile_application/login_screen.dart';
-import 'package:cocos_mobile_application/splash_screen.dart';
-import 'package:cocos_mobile_application/welcomePage.dart';
+import 'package:cocos_mobile_application/features/dashboard/HomeScreen.dart';
+import 'package:cocos_mobile_application/core/services/auth_service.dart';
+import 'package:cocos_mobile_application/features/auth/login_screen.dart';
+import 'package:cocos_mobile_application/features/onboarding/splash_screen.dart';
+import 'package:cocos_mobile_application/features/onboarding/welcomePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cocos_mobile_application/firebase_options.dart';
-import 'package:cocos_mobile_application/config/env_config.dart';
+import 'package:cocos_mobile_application/core/config/firebase_options.dart';
+import 'package:cocos_mobile_application/core/config/env_config.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 void main() async {

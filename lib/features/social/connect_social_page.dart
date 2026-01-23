@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cocos_mobile_application/social_connection_service.dart';
+import 'package:cocos_mobile_application/core/services/social_connection_service.dart';
 
 class ConnectSocialPage extends StatefulWidget {
   const ConnectSocialPage({super.key});

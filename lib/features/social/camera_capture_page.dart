@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:cocos_mobile_application/post_preview_page.dart';
+import 'package:cocos_mobile_application/features/social/post_preview_page.dart';
 
 class CameraCaptureScreen extends StatefulWidget {
   const CameraCaptureScreen({super.key});
