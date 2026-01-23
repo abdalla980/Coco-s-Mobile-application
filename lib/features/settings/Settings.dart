@@ -23,7 +23,7 @@ class Settings extends StatelessWidget {
             onPressed: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const Homescreen()),
+                MaterialPageRoute(builder: (context) => const Welcomepage()),
               );
             },
           ),
