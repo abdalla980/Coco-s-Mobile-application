@@ -33,7 +33,7 @@ class _HomescreenState extends State<Homescreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.computer),
-            label: "Website Builder",
+            label: "Request Website",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

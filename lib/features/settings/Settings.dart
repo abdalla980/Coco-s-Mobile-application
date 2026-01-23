@@ -13,24 +13,30 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
-      appBar: AppBar(
+       appBar: AppBar(
         backgroundColor: Colors.grey.shade200,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.grey.shade800),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const Homescreen()),
-            );
-          },
+        leading: Padding(
+          padding: const EdgeInsets.only(top: 18),
+          child: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.grey.shade800),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const Homescreen()),
+              );
+            },
+          ),
         ),
-        title: Text(
-          "Settings",
-          style: GoogleFonts.poppins(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 18),
+          child: Text(
+            "Settings",
+            style: GoogleFonts.poppins(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
           ),
         ),
       ),
