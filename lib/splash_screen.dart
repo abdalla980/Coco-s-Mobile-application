@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text("Someone is always lying", style: GoogleFonts.bebasNeue(),),
+        child: Image.asset("./images/CocoIcon.png", width: 150, height: 150)
       ),
     );
   }

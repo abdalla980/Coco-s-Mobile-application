@@ -61,7 +61,7 @@ class Settings extends StatelessWidget {
                 icon: Icons.link,
                 title: "Connect Social Media",
                 subtitle: "Link your social media accounts",
-                onTap: () {
+                onTap: () { 
                   Navigator.push(
                     context,
                     MaterialPageRoute(
