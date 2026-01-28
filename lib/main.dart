@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cocos_mobile_application/firebase_options.dart';
-import 'package:cocos_mobile_application/core/config/env_config.dart';
+import 'package:cocos_mobile_application/config/env_config.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 void main() async {
