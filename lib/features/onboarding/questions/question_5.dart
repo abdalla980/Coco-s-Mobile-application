@@ -1,4 +1,4 @@
-import 'package:cocos_mobile_application/features/dashboard/HomeScreen.dart';
+import 'package:cocos_mobile_application/features/dashboard/home_screen.dart';
 import 'package:cocos_mobile_application/core/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

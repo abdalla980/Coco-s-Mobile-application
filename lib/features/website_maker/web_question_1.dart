@@ -1,4 +1,4 @@
-import 'package:cocos_mobile_application/features/website_maker/webQuestion2.dart';
+import 'package:cocos_mobile_application/features/website_maker/web_question_2.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

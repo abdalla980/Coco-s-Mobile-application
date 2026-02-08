@@ -1,10 +1,10 @@
-import 'package:cocos_mobile_application/features/dashboard/HomeScreen.dart';
+import 'package:cocos_mobile_application/features/dashboard/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cocos_mobile_application/features/social/connect_social_page.dart';
 import 'package:cocos_mobile_application/core/services/auth_service.dart';
-import 'package:cocos_mobile_application/features/onboarding/welcomePage.dart';
-import 'package:cocos_mobile_application/features/dashboard/Dashboard.dart';
+import 'package:cocos_mobile_application/features/onboarding/welcome_page.dart';
+import 'package:cocos_mobile_application/features/dashboard/dashboard.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});

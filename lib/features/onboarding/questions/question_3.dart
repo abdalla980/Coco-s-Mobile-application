@@ -1,31 +1,27 @@
-import 'package:cocos_mobile_application/features/onboarding/questions/Question3.dart';
+import 'package:cocos_mobile_application/features/onboarding/questions/question_4.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Question2 extends StatefulWidget {
+class Question3 extends StatefulWidget {
   final String answer1;
-  const Question2({super.key, required this.answer1});
+  final String answer2;
+  const Question3({super.key, required this.answer1, required this.answer2});
 
   @override
-  State<Question2> createState() => _Question2State();
+  State<Question3> createState() => _Question3State();
 }
 
-class _Question2State extends State<Question2> {
+class _Question3State extends State<Question3> {
   final _customController = TextEditingController();
   String? _selectedOption;
   bool _showCustomField = false;
 
-  final Map<String, Map<String, dynamic>> _options = {
-    'Teens': {'size': 105.0, 'top': 10.0, 'left': 25.0, 'fontSize': 14.0},
-    'Young\nAdults': {
-      'size': 135.0,
-      'top': 5.0,
-      'left': 155.0,
-      'fontSize': 16.0,
-    },
-    'Families': {'size': 125.0, 'top': 150.0, 'left': 5.0, 'fontSize': 17.0},
-    'Seniors': {'size': 110.0, 'top': 155.0, 'left': 185.0, 'fontSize': 15.0},
-  };
+  final List<String> _options = [
+    'Food & Beverage',
+    'Clothing & Apparel',
+    'Professional Services',
+    'Digital Products',
+  ];
 
   @override
   void dispose() {
@@ -53,7 +49,7 @@ class _Question2State extends State<Question2> {
     if (_selectedOption == 'Custom') {
       answer = _customController.text.trim();
     } else {
-      answer = _selectedOption?.replaceAll('\n', ' ') ?? '';
+      answer = _selectedOption ?? '';
     }
 
     if (answer.isEmpty) {
@@ -66,8 +62,11 @@ class _Question2State extends State<Question2> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            Question3(answer1: widget.answer1, answer2: answer),
+        builder: (context) => Question4(
+          answer1: widget.answer1,
+          answer2: widget.answer2,
+          answer3: answer,
+        ),
       ),
     );
   }
@@ -84,7 +83,7 @@ class _Question2State extends State<Question2> {
             children: [
               const SizedBox(height: 24),
               Text(
-                "One More...",
+                "Almost There...",
                 style: GoogleFonts.poppins(
                   fontSize: 28,
                   fontWeight: FontWeight.w600,
@@ -92,39 +91,28 @@ class _Question2State extends State<Question2> {
               ),
               const SizedBox(height: 8),
               LinearProgressIndicator(
-                value: 0.4,
+                value: 0.6,
                 backgroundColor: Colors.grey.shade300,
                 color: Colors.green,
                 minHeight: 6,
               ),
               const SizedBox(height: 32),
               Text(
-                "Who is your target audience?",
+                "What products or services do you offer?",
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               const SizedBox(height: 32),
-              // Chaotic bubble layout
-              SizedBox(
-                height: 290,
-                child: Stack(
-                  children: _options.entries.map((entry) {
-                    return Positioned(
-                      top: entry.value['top'],
-                      left: entry.value['left'],
-                      child: _buildBubbleButton(
-                        entry.key,
-                        entry.value['size'],
-                        entry.value['fontSize'],
-                      ),
-                    );
-                  }).toList(),
+              // Pill buttons
+              ..._options.map(
+                (option) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _buildPillButton(option),
                 ),
               ),
-              const SizedBox(height: 24),
-              // Custom option as pill button
+              const SizedBox(height: 8),
               _buildPillButton('Custom Answer', isCustom: true),
               if (_showCustomField) ...[
                 const SizedBox(height: 16),
@@ -173,39 +161,10 @@ class _Question2State extends State<Question2> {
     );
   }
 
-  Widget _buildBubbleButton(String text, double size, double fontSize) {
-    final isSelected = _selectedOption == text;
-
-    return GestureDetector(
-      onTap: () => _selectOption(text),
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.green : Colors.grey.shade300,
-          shape: BoxShape.circle,
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Text(
-              text,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
-                fontSize: fontSize,
-                fontWeight: FontWeight.w500,
-                color: isSelected ? Colors.white : Colors.black87,
-                height: 1.1,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildPillButton(String text, {bool isCustom = false}) {
-    final isSelected = isCustom && _selectedOption == 'Custom';
+    final isSelected = isCustom
+        ? _selectedOption == 'Custom'
+        : _selectedOption == text;
 
     return GestureDetector(
       onTap: isCustom ? _selectCustom : () => _selectOption(text),
