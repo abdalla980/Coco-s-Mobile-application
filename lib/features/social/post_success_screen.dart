@@ -1,11 +1,13 @@
+import 'package:cross_file/cross_file.dart'; // For XFile
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:video_player/video_player.dart';
 import 'package:cocos_mobile_application/features/dashboard/home_screen.dart';
 
 class PostSuccessScreen extends StatefulWidget {
-  final File imageFile;
+  final XFile imageFile;
   final String caption;
   final String instagramHandle;
   final String location;
@@ -40,7 +42,15 @@ class _PostSuccessScreenState extends State<PostSuccessScreen> {
   }
 
   Future<void> _initializeVideo() async {
-    _videoController = VideoPlayerController.file(widget.imageFile);
+    if (kIsWeb) {
+      _videoController = VideoPlayerController.networkUrl(
+        Uri.parse(widget.imageFile.path),
+      );
+    } else {
+      _videoController = VideoPlayerController.file(
+        File(widget.imageFile.path),
+      );
+    }
     await _videoController!.initialize();
     await _videoController!.setLooping(true);
     await _videoController!.play(); // Auto-play in success screen
@@ -190,8 +200,13 @@ class _PostSuccessScreenState extends State<PostSuccessScreen> {
                                         : const Center(
                                             child: CircularProgressIndicator(),
                                           )
+                                  : kIsWeb
+                                  ? Image.network(
+                                      widget.imageFile.path,
+                                      fit: BoxFit.cover,
+                                    )
                                   : Image.file(
-                                      widget.imageFile,
+                                      File(widget.imageFile.path),
                                       fit: BoxFit.cover,
                                     ),
                             ),

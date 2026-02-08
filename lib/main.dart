@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,11 +15,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load environment configuration from .env file
-if(!kIsWeb){
+  // Load environment configuration from .env file
   await EnvConfig.load();
-}
 
-  if (kDebugMode && Platform.isAndroid) {
+  if (kDebugMode && defaultTargetPlatform == TargetPlatform.android) {
     debugPrint(
       'To get Android key hash for Facebook: keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64',
     );

@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:cross_file/cross_file.dart'; // For XFile
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
@@ -10,7 +10,7 @@ class AICaptionService {
   /// Generate caption from media (image or video) with user profile context
   /// Falls back to mock if feature flag is disabled or API fails
   Future<String> generateCaptionFromMedia(
-    File mediaFile, {
+    XFile mediaFile, {
     String? location,
     Map<String, dynamic>? userProfile,
     bool isVideo = false,
@@ -40,7 +40,7 @@ class AICaptionService {
 
   /// Generate caption using Google Gemini API
   Future<String> _generateCaptionReal(
-    File mediaFile, {
+    XFile mediaFile, {
     String? location,
     Map<String, dynamic>? userProfile,
     required bool isVideo,

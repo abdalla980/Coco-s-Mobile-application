@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,7 +21,7 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> {
       );
 
       if (photo != null) {
-        _navigateToPreview(File(photo.path), isVideo: false);
+        _navigateToPreview(photo, isVideo: false);
       }
     } catch (e) {
       _showError('Failed to capture photo: $e');
@@ -37,7 +36,7 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> {
       );
 
       if (image != null) {
-        _navigateToPreview(File(image.path), isVideo: false);
+        _navigateToPreview(image, isVideo: false);
       }
     } catch (e) {
       _showError('Failed to pick image: $e');
@@ -52,7 +51,7 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> {
       );
 
       if (video != null) {
-        _navigateToPreview(File(video.path), isVideo: true);
+        _navigateToPreview(video, isVideo: true);
       }
     } catch (e) {
       _showError('Failed to record video: $e');
@@ -64,14 +63,14 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> {
       final XFile? video = await _picker.pickVideo(source: ImageSource.gallery);
 
       if (video != null) {
-        _navigateToPreview(File(video.path), isVideo: true);
+        _navigateToPreview(video, isVideo: true);
       }
     } catch (e) {
       _showError('Failed to pick video: $e');
     }
   }
 
-  void _navigateToPreview(File mediaFile, {required bool isVideo}) {
+  void _navigateToPreview(XFile mediaFile, {required bool isVideo}) {
     Navigator.push(
       context,
       MaterialPageRoute(

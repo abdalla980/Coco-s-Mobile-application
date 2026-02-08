@@ -1,4 +1,6 @@
+import 'package:cross_file/cross_file.dart'; // For XFile
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:video_player/video_player.dart';
@@ -9,7 +11,7 @@ import 'package:cocos_mobile_application/core/services/auth_service.dart';
 import 'package:cocos_mobile_application/features/social/post_success_screen.dart';
 
 class PostPreviewPage extends StatefulWidget {
-  final File imageFile;
+  final XFile imageFile;
   final bool isVideo;
 
   const PostPreviewPage({
@@ -63,10 +65,18 @@ class _PostPreviewPageState extends State<PostPreviewPage> {
         debugPrint('⚠️ Warning: File extension might not be supported: $path');
       }
 
-      debugPrint('📂 File exists: ${await widget.imageFile.exists()}');
+      debugPrint('📂 File path: ${widget.imageFile.path}');
       debugPrint('📦 File size: ${await widget.imageFile.length()} bytes');
 
-      _videoController = VideoPlayerController.file(widget.imageFile);
+      if (kIsWeb) {
+        _videoController = VideoPlayerController.networkUrl(
+          Uri.parse(widget.imageFile.path),
+        );
+      } else {
+        _videoController = VideoPlayerController.file(
+          File(widget.imageFile.path),
+        );
+      }
 
       // Add timeout to initialization
       await _videoController!.initialize().timeout(
@@ -313,7 +323,12 @@ class _PostPreviewPageState extends State<PostPreviewPage> {
                                 ),
                               )
                             : const Center(child: CircularProgressIndicator())
-                      : Image.file(widget.imageFile, fit: BoxFit.cover),
+                      : kIsWeb
+                      ? Image.network(widget.imageFile.path, fit: BoxFit.cover)
+                      : Image.file(
+                          File(widget.imageFile.path),
+                          fit: BoxFit.cover,
+                        ),
                 ),
                 // Play icon overlay for videos
                 if (widget.isVideo &&

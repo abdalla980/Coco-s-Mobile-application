@@ -1,36 +1,44 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Centralized configuration loader for environment variables
 class EnvConfig {
+  static bool _isInitialized = false;
+
   /// Load environment configuration from .env file
   /// Call this in main() before runApp()
   static Future<void> load() async {
-    await dotenv.load(fileName: '.env');
+    try {
+      await dotenv.load(fileName: '.env');
+      _isInitialized = true;
+    } catch (e) {
+      debugPrint('Warning: Failed to load .env file: $e');
+    }
+  }
+
+  /// Safe getter that handles uninitialized dotenv
+  static String _get(String key, {String fallback = ''}) {
+    if (!_isInitialized) return fallback;
+    return dotenv.get(key, fallback: fallback);
   }
 
   // ==================== Feature Flags ====================
 
   /// Enable real Instagram API (false = use mock)
   static bool get enableRealInstagram {
-    return dotenv
-            .get('ENABLE_REAL_INSTAGRAM_API', fallback: 'false')
-            .toLowerCase() ==
+    return _get('ENABLE_REAL_INSTAGRAM_API', fallback: 'false').toLowerCase() ==
         'true';
   }
 
   /// Enable real Facebook API (false = use mock)
   static bool get enableRealFacebook {
-    return dotenv
-            .get('ENABLE_REAL_FACEBOOK_API', fallback: 'false')
-            .toLowerCase() ==
+    return _get('ENABLE_REAL_FACEBOOK_API', fallback: 'false').toLowerCase() ==
         'true';
   }
 
   /// Enable real AI caption generation (false = use mock)
   static bool get enableRealAICaptions {
-    return dotenv
-            .get('ENABLE_REAL_AI_CAPTIONS', fallback: 'false')
-            .toLowerCase() ==
+    return _get('ENABLE_REAL_AI_CAPTIONS', fallback: 'false').toLowerCase() ==
         'true';
   }
 
@@ -38,27 +46,27 @@ class EnvConfig {
 
   /// Facebook App ID
   static String get facebookAppId {
-    return dotenv.get('FACEBOOK_APP_ID', fallback: '');
+    return _get('FACEBOOK_APP_ID', fallback: '');
   }
 
   /// Facebook App Secret (DO NOT expose to client-side code)
   static String get facebookAppSecret {
-    return dotenv.get('FACEBOOK_APP_SECRET', fallback: '');
+    return _get('FACEBOOK_APP_SECRET', fallback: '');
   }
 
   /// Instagram App ID
   static String get instagramAppId {
-    return dotenv.get('INSTAGRAM_APP_ID', fallback: '');
+    return _get('INSTAGRAM_APP_ID', fallback: '');
   }
 
   /// Instagram App Secret (DO NOT expose to client-side code)
   static String get instagramAppSecret {
-    return dotenv.get('INSTAGRAM_APP_SECRET', fallback: '');
+    return _get('INSTAGRAM_APP_SECRET', fallback: '');
   }
 
   /// Gemini API Key for AI caption generation
   static String get geminiApiKey {
-    return dotenv.get('GEMINI_API_KEY', fallback: '');
+    return _get('GEMINI_API_KEY', fallback: '');
   }
 
   // ==================== Validation ====================
