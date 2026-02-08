@@ -1,6 +1,6 @@
-import 'package:cocos_mobile_application/features/dashboard/Dashboard.dart';
-import 'package:cocos_mobile_application/features/settings/Settings.dart';
-import 'package:cocos_mobile_application/features/website_maker/webQuestion1.dart';
+import 'package:cocos_mobile_application/features/dashboard/dashboard.dart';
+import 'package:cocos_mobile_application/features/settings/settings.dart';
+import 'package:cocos_mobile_application/features/website_maker/web_question_1.dart';
 import 'package:flutter/material.dart';
 
 class Homescreen extends StatefulWidget {

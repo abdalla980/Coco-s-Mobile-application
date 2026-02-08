@@ -1,4 +1,4 @@
-import 'package:cocos_mobile_application/features/settings/Settings.dart';
+import 'package:cocos_mobile_application/features/settings/settings.dart';
 import 'package:cocos_mobile_application/core/services/social_connection_service.dart';
 import 'package:cocos_mobile_application/features/social/camera_capture_page.dart';
 import 'package:cocos_mobile_application/features/social/connect_social_page.dart';

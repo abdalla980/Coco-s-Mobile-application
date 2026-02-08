@@ -42,9 +42,9 @@ class AICaptionService {
     String? location,
     Map<String, dynamic>? userProfile,
   }) async {
-    // Initialize Gemini model
+    // Using gemini-2.5-flash-lite for AI caption generation
     final model = GenerativeModel(
-      model: 'gemini-2.0-flash-exp',
+      model: 'gemini-2.5-flash-lite',
       apiKey: EnvConfig.geminiApiKey,
     );
 
