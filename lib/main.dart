@@ -16,7 +16,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load environment configuration from .env file
+if(!kIsWeb){
   await EnvConfig.load();
+}
 
   if (kDebugMode && Platform.isAndroid) {
     debugPrint(
