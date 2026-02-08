@@ -96,6 +96,9 @@ USER'S BUSINESS PROFILE:
 TASK:
 Analyze this image and generate an engaging Instagram/Facebook caption that fits THIS specific type of business.
 
+🚨 MANDATORY REQUIREMENT:
+${businessName.isNotEmpty ? '- YOU MUST INCLUDE THE BUSINESS NAME "$businessName" IN THE CAPTION. This is NON-NEGOTIABLE.\n- The business name should appear naturally in the first or second sentence.\n- DO NOT skip the business name. Every caption MUST mention "$businessName".' : '- Include a reference to the business in the caption.'}
+
 CRITICAL GUIDELINES:
 - Adapt your language to the business type:
   * For trades/crafts (construction, woodworking, installation): Talk about quality, precision, attention to detail
@@ -104,13 +107,12 @@ CRITICAL GUIDELINES:
   * For services (hair salons, cleaning, repairs): Talk about the experience, results, how you help customers
   * For creative businesses (photography, art, design): Talk about the work, the vision, the story behind it
 
-- Write from the perspective of a $businessType business owner${businessName.isNotEmpty ? ' called "$businessName"' : ''}
+- Write from the perspective of ${businessName.isNotEmpty ? '$businessName' : 'the business owner'} ($businessType)
 - Speak directly to $targetAudience in a $brandTone tone
-- ${businessName.isNotEmpty ? 'Naturally mention or reference "$businessName" in the caption when appropriate (but don\'t force it)' : ''}
 - Be conversational and natural, like you're posting on your own account
 - Use 1-3 relevant emojis that fit the business vibe
 - Include ONLY 3 hashtags maximum (relevant to $businessType)
-${location != null ? '- Mention this location naturally: $location' : ''}
+${location != null ? '- Mention this location naturally if possible: $location' : ''}
 - Length: 2-3 short, punchy sentences
 - Sound human and authentic, not corporate
 
@@ -118,6 +120,7 @@ DO:
 - Use emojis (1-3 total)
 - Keep it simple and relatable
 - Focus on what's in the image
+${businessName.isNotEmpty ? '- ALWAYS include "$businessName" in the caption' : ''}
 
 DO NOT:
 - Use corporate buzzwords like "solutions", "leverage", "synergy", "innovative"
@@ -125,6 +128,7 @@ DO NOT:
 - Talk about "craftsmanship" unless it's a craft/trade business
 - Use quotes around the caption
 - Sound like a marketing agency
+${businessName.isNotEmpty ? '- FORGET to mention "$businessName" - this is REQUIRED' : ''}
 
 Generate ONLY the caption text:
 ''';

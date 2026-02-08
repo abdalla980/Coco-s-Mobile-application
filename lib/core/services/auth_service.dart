@@ -67,6 +67,38 @@ class AuthService {
     await _auth.signOut();
   }
 
+  // Update user profile information
+  Future<void> updateUserProfile({
+    String? displayName,
+    Map<String, dynamic>? onboardingAnswers,
+  }) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw Exception('No user is currently signed in');
+    }
+
+    try {
+      // Update display name in Firebase Auth
+      if (displayName != null) {
+        await user.updateDisplayName(displayName);
+      }
+
+      // Update onboarding answers in Firestore
+      if (onboardingAnswers != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({
+              'onboardingAnswers': onboardingAnswers,
+              'updatedAt': FieldValue.serverTimestamp(),
+            });
+      }
+    } catch (e) {
+      print('Error updating user profile: $e'); // Changed debugPrint to print
+      rethrow;
+    }
+  }
+
   // Save onboarding answers
   Future<void> saveOnboardingAnswers(Map<String, String> answers) async {
     final user = _auth.currentUser;

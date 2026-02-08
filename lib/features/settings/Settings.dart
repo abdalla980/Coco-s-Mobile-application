@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cocos_mobile_application/features/social/connect_social_page.dart';
 import 'package:cocos_mobile_application/core/services/auth_service.dart';
 import 'package:cocos_mobile_application/features/auth/login_screen.dart';
+import 'package:cocos_mobile_application/features/settings/personal_details_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Settings extends StatelessWidget {
@@ -63,7 +64,12 @@ class Settings extends StatelessWidget {
                 title: "Profile",
                 subtitle: "Manage your personal information",
                 onTap: () {
-                  // Placeholder - Profile functionality
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PersonalDetailsScreen(),
+                    ),
+                  );
                 },
               ),
               const SizedBox(height: 24),

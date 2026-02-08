@@ -11,7 +11,7 @@ class WebsiteRequested extends StatefulWidget {
 }
 
 class _WebsiteRequestedState extends State<WebsiteRequested> {
-  int myIndex = 0;
+  int myIndex = 1; // Start at Website Builder tab to show success message
 
   Widget _getPage(int index) {
     switch (index) {
@@ -40,10 +40,7 @@ class _WebsiteRequestedState extends State<WebsiteRequested> {
                 decoration: BoxDecoration(
                   color: Colors.green.shade50,
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.green,
-                    width: 3,
-                  ),
+                  border: Border.all(color: Colors.green, width: 3),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.green.withOpacity(0.3),
@@ -80,10 +77,7 @@ class _WebsiteRequestedState extends State<WebsiteRequested> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Colors.green.shade200,
-                    width: 2,
-                  ),
+                  border: Border.all(color: Colors.green.shade200, width: 2),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.green.withOpacity(0.1),
@@ -120,10 +114,7 @@ class _WebsiteRequestedState extends State<WebsiteRequested> {
                 decoration: BoxDecoration(
                   color: Colors.green.shade100,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: Colors.green,
-                    width: 2,
-                  ),
+                  border: Border.all(color: Colors.green, width: 2),
                 ),
                 child: Text(
                   "We'll have the website of your dreams ready ASAP.",
@@ -152,9 +143,18 @@ class _WebsiteRequestedState extends State<WebsiteRequested> {
         currentIndex: myIndex,
         onTap: (index) => setState(() => myIndex = index),
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.query_stats), label: "Dashboard"),
-            BottomNavigationBarItem(icon: Icon(Icons.computer), label: "Website Builder"),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.query_stats),
+            label: "Dashboard",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.computer),
+            label: "Website Builder",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: "Settings",
+          ),
         ],
       ),
     );
