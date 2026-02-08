@@ -36,7 +36,7 @@ class WeeklyReachPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (snapshot.data == true) {
+          if (snapshot.data == false) {
             // No social connection, redirect after a moment
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.pushReplacement(
