@@ -108,66 +108,66 @@ class DashboardPage extends StatelessWidget {
                       ],
                     ),
                     child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "WEEKLY REACH",
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey.shade500,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "2,405",
+                          "WEEKLY REACH",
                           style: GoogleFonts.poppins(
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey.shade500,
+                            letterSpacing: 1.2,
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: Text(
-                            "+12%",
-                            style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.green,
-                            ),
-                          ),
-                        ),
-                        const Spacer(),
-                        // Mini bar chart
+                        const SizedBox(height: 8),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            _buildBarChartItem(30, Colors.grey.shade300),
-                            const SizedBox(width: 4),
-                            _buildBarChartItem(50, Colors.grey.shade300),
-                            const SizedBox(width: 4),
-                            _buildBarChartItem(40, Colors.grey.shade300),
-                            const SizedBox(width: 4),
-                            _buildBarChartItem(65, Colors.green.shade200),
+                            Text(
+                              "2,405",
+                              style: GoogleFonts.poppins(
+                                fontSize: 48,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 12.0),
+                              child: Text(
+                                "+12%",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ),
+                            const Spacer(),
+                            // Mini bar chart
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                _buildBarChartItem(30, Colors.grey.shade300),
+                                const SizedBox(width: 4),
+                                _buildBarChartItem(50, Colors.grey.shade300),
+                                const SizedBox(width: 4),
+                                _buildBarChartItem(40, Colors.grey.shade300),
+                                const SizedBox(width: 4),
+                                _buildBarChartItem(65, Colors.green.shade200),
+                              ],
+                            ),
                           ],
                         ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Views across Google & Instagram",
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
                       ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "Views across Google & Instagram",
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
                     ),
                   ),
                 ),
@@ -281,7 +281,7 @@ class DashboardPage extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32.0),
                   child: Text(
-                    "Tap the button to snap a photo of your latest installation.",
+                    "Tap the button to snap a photo or record a video of your latest work.",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       fontSize: 13,

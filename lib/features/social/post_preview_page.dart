@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:video_player/video_player.dart';
 import 'package:cocos_mobile_application/core/services/location_service.dart';
 import 'package:cocos_mobile_application/core/services/ai_caption_service.dart';
 import 'package:cocos_mobile_application/core/services/social_connection_service.dart';
@@ -9,8 +10,13 @@ import 'package:cocos_mobile_application/features/social/post_success_screen.dar
 
 class PostPreviewPage extends StatefulWidget {
   final File imageFile;
+  final bool isVideo;
 
-  const PostPreviewPage({super.key, required this.imageFile});
+  const PostPreviewPage({
+    super.key,
+    required this.imageFile,
+    this.isVideo = false,
+  });
 
   @override
   State<PostPreviewPage> createState() => _PostPreviewPageState();
@@ -27,6 +33,7 @@ class _PostPreviewPageState extends State<PostPreviewPage> {
   DateTime _generationTime = DateTime.now();
   bool _isInitialized = false;
   bool _isGeneratingCaption = false;
+  VideoPlayerController? _videoController;
 
   // Platform selection
   bool _instagramSelected = false;
@@ -36,7 +43,59 @@ class _PostPreviewPageState extends State<PostPreviewPage> {
   @override
   void initState() {
     super.initState();
+    if (widget.isVideo) {
+      _initializeVideo();
+    }
     _initializePost();
+  }
+
+  Future<void> _initializeVideo() async {
+    try {
+      debugPrint(
+        '🎥 Initializing video controller for: ${widget.imageFile.path}',
+      );
+
+      // Check file extension just in case
+      final path = widget.imageFile.path.toLowerCase();
+      if (!path.endsWith('.mp4') &&
+          !path.endsWith('.mov') &&
+          !path.endsWith('.avi')) {
+        debugPrint('⚠️ Warning: File extension might not be supported: $path');
+      }
+
+      debugPrint('📂 File exists: ${await widget.imageFile.exists()}');
+      debugPrint('📦 File size: ${await widget.imageFile.length()} bytes');
+
+      _videoController = VideoPlayerController.file(widget.imageFile);
+
+      // Add timeout to initialization
+      await _videoController!.initialize().timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw Exception('Video initialization timed out');
+        },
+      );
+
+      await _videoController!.setLooping(true);
+
+      debugPrint('✅ Video initialized successfully');
+      debugPrint('📐 Aspect ratio: ${_videoController!.value.aspectRatio}');
+      debugPrint('⏱️ Duration: ${_videoController!.value.duration}');
+
+      if (mounted) {
+        setState(() {});
+      }
+    } catch (e) {
+      debugPrint('❌ Error initializing video: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error loading video: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _initializePost() async {
@@ -84,12 +143,13 @@ class _PostPreviewPageState extends State<PostPreviewPage> {
       final onboardingAnswers =
           userProfile?['onboardingAnswers'] as Map<String, dynamic>?;
 
-      // Generate caption from image with user context
-      final caption = await _aiService.generateCaptionFromImage(
+      // Generate caption from media with user context
+      final caption = await _aiService.generateCaptionFromMedia(
         widget.imageFile,
         location: _location,
         userProfile:
             onboardingAnswers, // Pass onboarding answers, not full user profile
+        isVideo: widget.isVideo,
       );
 
       if (_captionController == null) {
@@ -174,15 +234,22 @@ class _PostPreviewPageState extends State<PostPreviewPage> {
 
     Navigator.pop(context); // Close loading dialog
 
+    final captionToPass = _captionController?.text ?? '';
+    debugPrint(
+      '🚀 Navigating to success screen with caption: "$captionToPass"',
+    );
+    debugPrint('📸 Media type: ${widget.isVideo ? 'Video' : 'Photo'}');
+
     // Navigate to success screen
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => PostSuccessScreen(
           imageFile: widget.imageFile,
-          caption: _captionController?.text ?? '',
+          caption: captionToPass,
           instagramHandle: instagramHandle,
           location: _location ?? '',
+          isVideo: widget.isVideo,
         ),
       ),
     );
@@ -191,6 +258,7 @@ class _PostPreviewPageState extends State<PostPreviewPage> {
   @override
   void dispose() {
     _captionController?.dispose();
+    _videoController?.dispose();
     super.dispose();
   }
 
@@ -216,7 +284,7 @@ class _PostPreviewPageState extends State<PostPreviewPage> {
       ),
       body: Column(
         children: [
-          // Image preview
+          // Media preview (image or video)
           Expanded(
             flex: 2,
             child: Stack(
@@ -225,8 +293,37 @@ class _PostPreviewPageState extends State<PostPreviewPage> {
                 Container(
                   width: double.infinity,
                   height: double.infinity,
-                  child: Image.file(widget.imageFile, fit: BoxFit.cover),
+                  child: widget.isVideo && _videoController != null
+                      ? _videoController!.value.isInitialized
+                            ? GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _videoController!.value.isPlaying
+                                        ? _videoController!.pause()
+                                        : _videoController!.play();
+                                  });
+                                },
+                                child: FittedBox(
+                                  fit: BoxFit.cover,
+                                  child: SizedBox(
+                                    width: _videoController!.value.size.width,
+                                    height: _videoController!.value.size.height,
+                                    child: VideoPlayer(_videoController!),
+                                  ),
+                                ),
+                              )
+                            : const Center(child: CircularProgressIndicator())
+                      : Image.file(widget.imageFile, fit: BoxFit.cover),
                 ),
+                // Play icon overlay for videos
+                if (widget.isVideo &&
+                    _videoController != null &&
+                    !_videoController!.value.isPlaying)
+                  Icon(
+                    Icons.play_circle_outline,
+                    size: 80,
+                    color: Colors.white.withOpacity(0.8),
+                  ),
                 Positioned(
                   top: 20,
                   child: Container(
@@ -238,10 +335,16 @@ class _PostPreviewPageState extends State<PostPreviewPage> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.camera_alt, color: Colors.white, size: 20),
+                        Icon(
+                          widget.isVideo ? Icons.videocam : Icons.camera_alt,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                         SizedBox(width: 8),
                         Text(
-                          '[ CAPTURED IMAGE ]',
+                          widget.isVideo
+                              ? '[ CAPTURED VIDEO ]'
+                              : '[ CAPTURED IMAGE ]',
                           style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontSize: 12,

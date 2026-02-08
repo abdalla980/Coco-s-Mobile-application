@@ -7,19 +7,21 @@ import 'package:cocos_mobile_application/config/env_config.dart';
 class AICaptionService {
   final Random _random = Random();
 
-  /// Generate caption from image with user profile context
+  /// Generate caption from media (image or video) with user profile context
   /// Falls back to mock if feature flag is disabled or API fails
-  Future<String> generateCaptionFromImage(
-    File imageFile, {
+  Future<String> generateCaptionFromMedia(
+    File mediaFile, {
     String? location,
     Map<String, dynamic>? userProfile,
+    bool isVideo = false,
   }) async {
     if (EnvConfig.enableRealAICaptions && EnvConfig.geminiApiKey.isNotEmpty) {
       try {
         return await _generateCaptionReal(
-          imageFile,
+          mediaFile,
           location: location,
           userProfile: userProfile,
+          isVideo: isVideo,
         );
       } catch (e) {
         debugPrint('Error generating real caption: $e');
@@ -38,25 +40,33 @@ class AICaptionService {
 
   /// Generate caption using Google Gemini API
   Future<String> _generateCaptionReal(
-    File imageFile, {
+    File mediaFile, {
     String? location,
     Map<String, dynamic>? userProfile,
+    required bool isVideo,
   }) async {
-    // Using gemini-2.5-flash-lite for AI caption generation
+    // Using gemini-2.0-flash for faster video processing
     final model = GenerativeModel(
-      model: 'gemini-2.5-flash-lite',
+      model: 'gemini-2.0-flash',
       apiKey: EnvConfig.geminiApiKey,
     );
 
-    // Read image bytes
-    final imageBytes = await imageFile.readAsBytes();
+    // Read media bytes
+    final mediaBytes = await mediaFile.readAsBytes();
 
     // Build personalized prompt with user context
-    final prompt = _buildPrompt(location: location, userProfile: userProfile);
+    final prompt = _buildPrompt(
+      location: location,
+      userProfile: userProfile,
+      isVideo: isVideo,
+    );
 
-    // Create content with image and prompt
+    // Create content with media and prompt
     final content = [
-      Content.multi([TextPart(prompt), DataPart('image/jpeg', imageBytes)]),
+      Content.multi([
+        TextPart(prompt),
+        DataPart(isVideo ? 'video/mp4' : 'image/jpeg', mediaBytes),
+      ]),
     ];
 
     // Generate caption
@@ -71,7 +81,11 @@ class AICaptionService {
   }
 
   /// Build AI prompt with user profile personalization
-  String _buildPrompt({String? location, Map<String, dynamic>? userProfile}) {
+  String _buildPrompt({
+    String? location,
+    Map<String, dynamic>? userProfile,
+    bool isVideo = false,
+  }) {
     // Extract user profile info
     final businessName = userProfile?['businessName'] ?? '';
     final businessType = userProfile?['businessType'] ?? 'business';
@@ -80,6 +94,8 @@ class AICaptionService {
         userProfile?['productsServices'] ?? 'quality products and services';
     final brandTone = userProfile?['brandTone'] ?? 'professional';
     final mainGoals = userProfile?['mainGoals'] ?? 'showcasing work';
+
+    final mediaType = isVideo ? 'video' : 'image';
 
     final prompt =
         '''
@@ -94,7 +110,7 @@ USER'S BUSINESS PROFILE:
 - Main Goals: $mainGoals
 
 TASK:
-Analyze this image and generate an engaging Instagram/Facebook caption that fits THIS specific type of business.
+Analyze this $mediaType and generate an engaging Instagram/Facebook caption that fits THIS specific type of business.
 
 🚨 MANDATORY REQUIREMENT:
 ${businessName.isNotEmpty ? '- YOU MUST INCLUDE THE BUSINESS NAME "$businessName" IN THE CAPTION. This is NON-NEGOTIABLE.\n- The business name should appear naturally in the first or second sentence.\n- DO NOT skip the business name. Every caption MUST mention "$businessName".' : '- Include a reference to the business in the caption.'}
@@ -119,7 +135,7 @@ ${location != null ? '- Mention this location naturally if possible: $location' 
 DO:
 - Use emojis (1-3 total)
 - Keep it simple and relatable
-- Focus on what's in the image
+- Focus on what's in the $mediaType
 ${businessName.isNotEmpty ? '- ALWAYS include "$businessName" in the caption' : ''}
 
 DO NOT:

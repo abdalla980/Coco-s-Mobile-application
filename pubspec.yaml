@@ -41,6 +41,7 @@ dependencies:
 
   # Image & Camera
   image_picker: ^1.0.7
+  video_player: ^2.9.2
 
   # Location Services
   geolocator: ^11.0.0
