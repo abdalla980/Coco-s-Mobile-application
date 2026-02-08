@@ -2,6 +2,7 @@ import 'package:cocos_mobile_application/features/settings/Settings.dart';
 import 'package:cocos_mobile_application/core/services/social_connection_service.dart';
 import 'package:cocos_mobile_application/features/social/camera_capture_page.dart';
 import 'package:cocos_mobile_application/features/social/connect_social_page.dart';
+import 'package:cocos_mobile_application/features/dashboard/weeklyreach.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -80,21 +81,33 @@ class DashboardPage extends StatelessWidget {
               const SizedBox(height: 32),
 
               // Weekly Reach Card
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: Colors.white,
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const WeeklyReachPage(),
+                      ),
+                    );
+                  },
                   borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.shade300,
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.shade300,
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: Column(
+                    child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -155,6 +168,8 @@ class DashboardPage extends StatelessWidget {
                       ),
                     ),
                   ],
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 48),

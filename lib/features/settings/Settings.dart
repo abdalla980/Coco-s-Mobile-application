@@ -5,9 +5,18 @@ import 'package:cocos_mobile_application/features/social/connect_social_page.dar
 import 'package:cocos_mobile_application/core/services/auth_service.dart';
 import 'package:cocos_mobile_application/features/onboarding/welcomePage.dart';
 import 'package:cocos_mobile_application/features/dashboard/Dashboard.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
+
+  Future<void> subscriptionPlan() async {
+    final uri = Uri.parse('https://coco.one/preise');
+    if (!await launchUrl(uri, mode: LaunchMode.platformDefault)) {
+      throw 'Could not launch $uri';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,8 +77,8 @@ class Settings extends StatelessWidget {
                 icon: Icons.card_membership,
                 title: "Subscriptions",
                 subtitle: "View and manage your plans",
-                onTap: () {
-                  // Placeholder - Subscriptions functionality
+                onTap: () async{
+               await subscriptionPlan();
                 },
               ),
               const SizedBox(height: 24),

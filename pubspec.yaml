@@ -57,6 +57,7 @@ dependencies:
 
   # AI Caption Generation
   google_generative_ai: ^0.4.6
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
