@@ -10,12 +10,18 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cocos_mobile_application/firebase_options.dart';
 import 'package:cocos_mobile_application/config/env_config.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter/foundation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  if (!kIsWeb) {
+    await EnvConfig.load();
+  }
   // Load environment configuration from .env file
-  await EnvConfig.load();
+  if (!kIsWeb) {
+    await EnvConfig.load();
+  }
 
   // TEMPORARY: Print Android key hash for Facebook SDK setup
   // TODO: Remove this after copying the key hash to Meta Developer Console
