@@ -4,10 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cocos_mobile_application/core/services/location_service.dart';
 import 'package:cocos_mobile_application/core/services/ai_caption_service.dart';
 import 'package:cocos_mobile_application/core/services/social_connection_service.dart';
-import 'package:cocos_mobile_application/config/env_config.dart';
-import 'package:cocos_mobile_application/core/services/instagram_api_service.dart';
-import 'package:cocos_mobile_application/core/services/facebook_api_service.dart';
 import 'package:cocos_mobile_application/core/services/auth_service.dart';
+import 'package:cocos_mobile_application/features/social/post_success_screen.dart';
 
 class PostPreviewPage extends StatefulWidget {
   final File imageFile;
@@ -130,246 +128,62 @@ class _PostPreviewPageState extends State<PostPreviewPage> {
       return;
     }
 
-    // Show loading
+    // Show loading modal with rounded rectangle
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => Center(
         child: Container(
-          padding: EdgeInsets.all(24),
+          margin: EdgeInsets.symmetric(horizontal: 60),
+          padding: EdgeInsets.all(32),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
-              Text('Posting...', style: GoogleFonts.poppins()),
+              CircularProgressIndicator(color: Colors.green),
+              SizedBox(height: 20),
+              Text(
+                'Posting...',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
 
-    // Post to selected platforms
-    final List<String> successPosts = [];
-    final List<String> failedPosts = [];
+    // Simulate posting delay
+    await Future.delayed(Duration(seconds: 2));
 
-    // Post to Instagram if selected
-    if (_instagramSelected) {
-      final result = await _postToInstagram();
-      if (result != null) {
-        successPosts.add(result);
-      } else {
-        failedPosts.add('Instagram');
+    // Get Instagram handle from social service
+    String instagramHandle = '@your_business';
+    try {
+      final accountInfo = await _socialService.getAccountInfo('instagram');
+      if (accountInfo != null && accountInfo['username'] != null) {
+        instagramHandle = '@${accountInfo['username']}';
       }
-    }
-
-    // Post to Facebook if selected
-    if (_facebookSelected) {
-      final result = await _postToFacebook();
-      if (result != null) {
-        successPosts.add(result);
-      } else {
-        failedPosts.add('Facebook');
-      }
-    }
-
-    // Post to Web (mock only)
-    if (_webSelected) {
-      await Future.delayed(Duration(seconds: 1));
-      successPosts.add(
-        '✓ Web: Post #WEB${DateTime.now().millisecondsSinceEpoch}',
-      );
+    } catch (e) {
+      debugPrint('Could not get Instagram handle: $e');
     }
 
     Navigator.pop(context); // Close loading dialog
 
-    // Show result dialog
-    if (successPosts.isNotEmpty) {
-      _showResultDialog(successPosts, failedPosts);
-    } else {
-      _showErrorDialog('Failed to post to all platforms');
-    }
-  }
-
-  // Post to Instagram - uses real API if enabled
-  Future<String?> _postToInstagram() async {
-    if (EnvConfig.enableRealInstagram) {
-      return await _postToInstagramReal();
-    } else {
-      return await _postToInstagramMock();
-    }
-  }
-
-  // Real Instagram posting
-  Future<String?> _postToInstagramReal() async {
-    try {
-      // Get Instagram connection data
-      final accountInfo = await _socialService.getAccountInfo('instagram');
-      if (accountInfo == null) return null;
-
-      final accessToken = accountInfo['accessToken'] as String?;
-      if (accessToken == null) {
-        debugPrint('No access token found for Instagram');
-        return null;
-      }
-
-      // NOTE: Real Instagram API requires images to be hosted on a public URL
-      // For now, return an error message to remind user to implement image hosting
-      _showErrorDialog(
-        'Image hosting not implemented yet.\n\n'
-        'Instagram requires images to be hosted on a public URL.\n'
-        'Please add Firebase Storage or similar service to upload images first.',
-      );
-      return null;
-
-      // TODO: When image hosting is implemented, use this code:
-      // final igService = InstagramApiService();
-      // final postId = await igService.postPhoto(
-      //   igUserId: 'YOUR_IG_USER_ID', // Get from accountInfo or API
-      //   imageUrl: 'PUBLIC_URL_TO_IMAGE',
-      //   caption: _captionController?.text ?? '',
-      //   accessToken: accessToken,
-      // );
-      // return postId != null ? '✓ Instagram: Post #$postId' : null;
-    } catch (e) {
-      debugPrint('Error posting to Instagram (real): $e');
-      return null;
-    }
-  }
-
-  // Mock Instagram posting
-  Future<String?> _postToInstagramMock() async {
-    await Future.delayed(Duration(seconds: 1));
-    return '✓ Instagram: Post #IG${DateTime.now().millisecondsSinceEpoch}';
-  }
-
-  // Post to Facebook - uses real API if enabled
-  Future<String?> _postToFacebook() async {
-    if (EnvConfig.enableRealFacebook) {
-      return await _postToFacebookReal();
-    } else {
-      return await _postToFacebookMock();
-    }
-  }
-
-  // Real Facebook posting
-  Future<String?> _postToFacebookReal() async {
-    try {
-      // Get Facebook connection data
-      final accountInfo = await _socialService.getAccountInfo('facebook');
-      if (accountInfo == null) return null;
-
-      final pageId = accountInfo['pageId'] as String?;
-      final pageAccessToken = accountInfo['pageAccessToken'] as String?;
-
-      if (pageId == null || pageAccessToken == null) {
-        debugPrint('No page ID or access token found for Facebook');
-        return null;
-      }
-
-      // NOTE: Real Facebook API also requires images to be hosted on a public URL
-      _showErrorDialog(
-        'Image hosting not implemented yet.\n\n'
-        'Facebook requires images to be hosted on a public URL.\n'
-        'Please add Firebase Storage or similar service to upload images first.',
-      );
-      return null;
-
-      // TODO: When image hosting is implemented, use this code:
-      // final fbService = FacebookApiService();
-      // final postId = await fbService.postPhoto(
-      //   pageId: pageId,
-      //   imageUrl: 'PUBLIC_URL_TO_IMAGE',
-      //   message: _captionController?.text ?? '',
-      //   pageAccessToken: pageAccessToken,
-      // );
-      // return postId != null ? '✓ Facebook: Post #$postId' : null;
-    } catch (e) {
-      debugPrint('Error posting to Facebook (real): $e');
-      return null;
-    }
-  }
-
-  // Mock Facebook posting
-  Future<String?> _postToFacebookMock() async {
-    await Future.delayed(Duration(seconds: 1));
-    return '✓ Facebook: Post #FB${DateTime.now().millisecondsSinceEpoch}';
-  }
-
-  // Show success/partial success dialog
-  void _showResultDialog(List<String> successPosts, List<String> failedPosts) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(
-              failedPosts.isEmpty ? Icons.check_circle : Icons.warning,
-              color: failedPosts.isEmpty ? Colors.green : Colors.orange,
-              size: 28,
-            ),
-            SizedBox(width: 8),
-            Text(
-              failedPosts.isEmpty ? 'Posted Successfully!' : 'Partially Posted',
-              style: GoogleFonts.poppins(),
-            ),
-          ],
+    // Navigate to success screen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PostSuccessScreen(
+          imageFile: widget.imageFile,
+          caption: _captionController?.text ?? '',
+          instagramHandle: instagramHandle,
+          location: _location ?? '',
         ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ...successPosts.map((post) => Text(post)),
-            if (failedPosts.isNotEmpty) ...[
-              SizedBox(height: 8),
-              Text(
-                'Failed: ${failedPosts.join(", ")}',
-                style: TextStyle(color: Colors.red),
-              ),
-            ],
-          ],
-        ),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context); // Close dialog
-              Navigator.pop(context); // Return to dashboard
-            },
-            child: Text('Done'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Show error dialog
-  void _showErrorDialog(String message) {
-    // Close loading dialog if open
-    if (Navigator.canPop(context)) {
-      Navigator.pop(context);
-    }
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(Icons.error, color: Colors.red, size: 28),
-            SizedBox(width: 8),
-            Text('Error', style: GoogleFonts.poppins()),
-          ],
-        ),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('OK'),
-          ),
-        ],
       ),
     );
   }
@@ -411,7 +225,7 @@ class _PostPreviewPageState extends State<PostPreviewPage> {
                 Container(
                   width: double.infinity,
                   height: double.infinity,
-                  child: Image.file(widget.imageFile, fit: BoxFit.contain),
+                  child: Image.file(widget.imageFile, fit: BoxFit.cover),
                 ),
                 Positioned(
                   top: 20,

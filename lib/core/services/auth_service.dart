@@ -52,6 +52,7 @@ class AuthService {
           'uid': user.uid,
           'email': email,
           'name': name,
+          'questionsCompleted': false,
           'createdAt': FieldValue.serverTimestamp(),
         });
       }

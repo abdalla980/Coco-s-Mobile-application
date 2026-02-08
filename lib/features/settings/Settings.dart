@@ -3,12 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cocos_mobile_application/features/social/connect_social_page.dart';
 import 'package:cocos_mobile_application/core/services/auth_service.dart';
-import 'package:cocos_mobile_application/features/onboarding/welcome_page.dart';
-import 'package:cocos_mobile_application/features/dashboard/Dashboard.dart';
+import 'package:cocos_mobile_application/features/auth/login_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'package:cocos_mobile_application/features/onboarding/welcome_page.dart';
-import 'package:cocos_mobile_application/features/dashboard/dashboard.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -24,7 +20,7 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
-       appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: Colors.grey.shade200,
         elevation: 0,
         leading: Padding(
@@ -79,8 +75,8 @@ class Settings extends StatelessWidget {
                 icon: Icons.card_membership,
                 title: "Subscriptions",
                 subtitle: "View and manage your plans",
-                onTap: () async{
-               await subscriptionPlan();
+                onTap: () async {
+                  await subscriptionPlan();
                 },
               ),
               const SizedBox(height: 24),
@@ -92,7 +88,7 @@ class Settings extends StatelessWidget {
                 icon: Icons.link,
                 title: "Connect Social Media",
                 subtitle: "Link your social media accounts",
-                onTap: () { 
+                onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -254,10 +250,10 @@ class Settings extends StatelessWidget {
               // Sign out
               await authService.signOut();
 
-              // Navigate to welcome page and remove all previous routes
+              // Navigate to login screen and remove all previous routes
               if (context.mounted) {
                 Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const Welcomepage()),
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
                   (route) => false,
                 );
               }

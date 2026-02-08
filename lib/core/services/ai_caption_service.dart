@@ -73,6 +73,7 @@ class AICaptionService {
   /// Build AI prompt with user profile personalization
   String _buildPrompt({String? location, Map<String, dynamic>? userProfile}) {
     // Extract user profile info
+    final businessName = userProfile?['businessName'] ?? '';
     final businessType = userProfile?['businessType'] ?? 'business';
     final targetAudience = userProfile?['targetAudience'] ?? 'general audience';
     final productsServices =
@@ -85,6 +86,7 @@ class AICaptionService {
 You are a professional social media caption writer for small businesses.
 
 USER'S BUSINESS PROFILE:
+- Business Name: $businessName
 - Business Type: $businessType
 - Target Audience: $targetAudience
 - Products/Services: $productsServices
@@ -102,8 +104,9 @@ CRITICAL GUIDELINES:
   * For services (hair salons, cleaning, repairs): Talk about the experience, results, how you help customers
   * For creative businesses (photography, art, design): Talk about the work, the vision, the story behind it
 
-- Write from the perspective of a $businessType business owner
+- Write from the perspective of a $businessType business owner${businessName.isNotEmpty ? ' called "$businessName"' : ''}
 - Speak directly to $targetAudience in a $brandTone tone
+- ${businessName.isNotEmpty ? 'Naturally mention or reference "$businessName" in the caption when appropriate (but don\'t force it)' : ''}
 - Be conversational and natural, like you're posting on your own account
 - Use 1-3 relevant emojis that fit the business vibe
 - Include ONLY 3 hashtags maximum (relevant to $businessType)

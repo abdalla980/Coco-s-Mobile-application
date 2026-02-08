@@ -1,32 +1,39 @@
-import 'package:cocos_mobile_application/features/onboarding/questions/question_5.dart';
+import 'package:cocos_mobile_application/features/dashboard/home_screen.dart';
+import 'package:cocos_mobile_application/core/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Question4 extends StatefulWidget {
+class Question6 extends StatefulWidget {
   final String answer1;
   final String answer2;
   final String answer3;
-  const Question4({
+  final String answer4;
+  final String answer5;
+  const Question6({
     super.key,
     required this.answer1,
     required this.answer2,
     required this.answer3,
+    required this.answer4,
+    required this.answer5,
   });
 
   @override
-  State<Question4> createState() => _Question4State();
+  State<Question6> createState() => _Question6State();
 }
 
-class _Question4State extends State<Question4> {
+class _Question6State extends State<Question6> {
   final _customController = TextEditingController();
+  final _authService = AuthService();
   String? _selectedOption;
   bool _showCustomField = false;
+  bool _isLoading = false;
 
   final List<String> _options = [
-    'Food & Beverage',
-    'Clothing & Apparel',
-    'Professional Services',
-    'Digital Products',
+    'Increase Sales',
+    'Build Awareness',
+    'Customer Engagement',
+    'Market Expansion',
   ];
 
   @override
@@ -50,7 +57,7 @@ class _Question4State extends State<Question4> {
     });
   }
 
-  void _next() {
+  Future<void> _submitAnswers() async {
     String answer = '';
     if (_selectedOption == 'Custom') {
       answer = _customController.text.trim();
@@ -65,17 +72,44 @@ class _Question4State extends State<Question4> {
       return;
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Question5(
-          answer1: widget.answer1,
-          answer2: widget.answer2,
-          answer3: widget.answer3,
-          answer4: answer,
-        ),
-      ),
-    );
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Prepare answers map
+      final answers = {
+        'businessName': widget.answer1,
+        'businessType': widget.answer2,
+        'targetAudience': widget.answer3,
+        'productsServices': widget.answer4,
+        'brandTone': widget.answer5,
+        'mainGoals': answer,
+      };
+
+      // Save to Firestore
+      await _authService.saveOnboardingAnswers(answers);
+
+      // Navigate to HomeScreen
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Homescreen()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving answers: ${e.toString()}')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -90,7 +124,7 @@ class _Question4State extends State<Question4> {
             children: [
               const SizedBox(height: 24),
               Text(
-                "Getting There...",
+                "The Last Question",
                 style: GoogleFonts.poppins(
                   fontSize: 28,
                   fontWeight: FontWeight.w600,
@@ -98,14 +132,14 @@ class _Question4State extends State<Question4> {
               ),
               const SizedBox(height: 8),
               LinearProgressIndicator(
-                value: 0.66,
+                value: 1.0,
                 backgroundColor: Colors.grey.shade300,
                 color: Colors.green,
                 minHeight: 6,
               ),
               const SizedBox(height: 32),
               Text(
-                "What products or services do you offer?",
+                "What are your main goals with this app?",
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
@@ -145,15 +179,17 @@ class _Question4State extends State<Question4> {
                 width: double.infinity,
                 height: 50,
                 child: FloatingActionButton.extended(
-                  onPressed: _next,
-                  label: Text(
-                    "Next",
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
+                  onPressed: _isLoading ? null : _submitAnswers,
+                  label: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : Text(
+                          "Submit",
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                   backgroundColor: Colors.green,
                   elevation: 0,
                   shape: RoundedRectangleBorder(

@@ -41,7 +41,9 @@ class WeeklyReachPage extends StatelessWidget {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const ConnectSocialPage()),
+                MaterialPageRoute(
+                  builder: (context) => const ConnectSocialPage(),
+                ),
               );
             });
             return const Center(child: CircularProgressIndicator());
@@ -56,11 +58,21 @@ class WeeklyReachPage extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: _buildStatCard("Likes", "805", Icons.favorite, Colors.pink),
+                      child: _buildStatCard(
+                        "Likes",
+                        "805",
+                        Icons.favorite,
+                        Colors.pink,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: _buildStatCard("Views", "3,923", Icons.visibility, Colors.purple),
+                      child: _buildStatCard(
+                        "Views",
+                        "3,923",
+                        Icons.visibility,
+                        Colors.purple,
+                      ),
                     ),
                   ],
                 ),
@@ -68,11 +80,21 @@ class WeeklyReachPage extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: _buildStatCard("Saves", "634", Icons.bookmark, Colors.pink.shade300),
+                      child: _buildStatCard(
+                        "Saves",
+                        "634",
+                        Icons.bookmark,
+                        Colors.pink.shade300,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: _buildStatCard("Reposts", "147", Icons.repeat, Colors.purple.shade300),
+                      child: _buildStatCard(
+                        "Reposts",
+                        "147",
+                        Icons.repeat,
+                        Colors.purple.shade300,
+                      ),
                     ),
                   ],
                 ),
@@ -105,10 +127,7 @@ class WeeklyReachPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      SizedBox(
-                        height: 200,
-                        child: _buildLineGraph(),
-                      ),
+                      SizedBox(height: 200, child: _buildLineGraph()),
                       const SizedBox(height: 16),
                       _buildDateLabels(),
                     ],
@@ -160,7 +179,7 @@ class WeeklyReachPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 32),
-                
+
                 // Additional Stats Section
                 Text(
                   "Performance Metrics",
@@ -174,11 +193,21 @@ class WeeklyReachPage extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: _buildStatCard("Posts Generated", "12", Icons.photo_camera, Colors.blue),
+                      child: _buildStatCard(
+                        "Posts Generated",
+                        "12",
+                        Icons.photo_camera,
+                        Colors.blue,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: _buildStatCard("Followers Gained", "+234", Icons.person_add, Colors.green),
+                      child: _buildStatCard(
+                        "Followers Gained",
+                        "+234",
+                        Icons.person_add,
+                        Colors.green,
+                      ),
                     ),
                   ],
                 ),
@@ -186,16 +215,26 @@ class WeeklyReachPage extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: _buildStatCard("Engagement Rate", "4.2%", Icons.trending_up, Colors.orange),
+                      child: _buildStatCard(
+                        "Engagement Rate",
+                        "4.2%",
+                        Icons.trending_up,
+                        Colors.orange,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: _buildStatCard("Reach", "8.5K", Icons.people, Colors.teal),
+                      child: _buildStatCard(
+                        "Reach",
+                        "8.5K",
+                        Icons.people,
+                        Colors.teal,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 32),
-                
+
                 // Capture More Work Button
                 SizedBox(
                   width: double.infinity,
@@ -204,7 +243,9 @@ class WeeklyReachPage extends StatelessWidget {
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const Homescreen()),
+                        MaterialPageRoute(
+                          builder: (context) => const Homescreen(),
+                        ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -246,7 +287,12 @@ class WeeklyReachPage extends StatelessWidget {
     return await socialService.hasAnyConnection();
   }
 
-  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -347,15 +393,13 @@ class WeeklyReachPage extends StatelessWidget {
         SizedBox(
           width: 200,
           height: 200,
-          child: CustomPaint(
-            painter: ViewsCirclePainter(),
-          ),
+          child: CustomPaint(painter: ViewsCirclePainter()),
         ),
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "8,923",
+              "3,923",
               style: GoogleFonts.poppins(
                 fontSize: 36,
                 fontWeight: FontWeight.bold,
@@ -364,10 +408,7 @@ class WeeklyReachPage extends StatelessWidget {
             ),
             Text(
               "Total Views",
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                color: Colors.white,
-              ),
+              style: GoogleFonts.poppins(fontSize: 14, color: Colors.white),
             ),
           ],
         ),
@@ -381,18 +422,12 @@ class WeeklyReachPage extends StatelessWidget {
         Container(
           width: 16,
           height: 16,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 8),
         Text(
           label,
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            color: Colors.grey.shade700,
-          ),
+          style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade700),
         ),
       ],
     );
@@ -423,11 +458,7 @@ class LineGraphPainter extends CustomPainter {
     // Draw grid lines
     for (int i = 0; i <= 4; i++) {
       final y = (size.height / 4) * i;
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(size.width, y),
-        gridPaint,
-      );
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
     }
 
     // Draw line graph
@@ -491,4 +522,3 @@ class ViewsCirclePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-

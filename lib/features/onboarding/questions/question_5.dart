@@ -1,5 +1,4 @@
-import 'package:cocos_mobile_application/features/dashboard/home_screen.dart';
-import 'package:cocos_mobile_application/core/services/auth_service.dart';
+import 'package:cocos_mobile_application/features/onboarding/questions/question_6.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -22,17 +21,20 @@ class Question5 extends StatefulWidget {
 
 class _Question5State extends State<Question5> {
   final _customController = TextEditingController();
-  final _authService = AuthService();
   String? _selectedOption;
   bool _showCustomField = false;
-  bool _isLoading = false;
 
-  final List<String> _options = [
-    'Increase Sales',
-    'Build Awareness',
-    'Customer Engagement',
-    'Market Expansion',
-  ];
+  final Map<String, Map<String, dynamic>> _options = {
+    'Profes-\nsional': {
+      'size': 130.0,
+      'top': 8.0,
+      'left': 8.0,
+      'fontSize': 15.5,
+    },
+    'Friendly': {'size': 115.0, 'top': 12.0, 'left': 178.0, 'fontSize': 16.0},
+    'Creative': {'size': 122.0, 'top': 148.0, 'left': 2.0, 'fontSize': 17.0},
+    'Luxury': {'size': 108.0, 'top': 160.0, 'left': 190.0, 'fontSize': 15.0},
+  };
 
   @override
   void dispose() {
@@ -55,12 +57,12 @@ class _Question5State extends State<Question5> {
     });
   }
 
-  Future<void> _submitAnswers() async {
+  void _next() {
     String answer = '';
     if (_selectedOption == 'Custom') {
       answer = _customController.text.trim();
     } else {
-      answer = _selectedOption ?? '';
+      answer = _selectedOption?.replaceAll('\n', '') ?? '';
     }
 
     if (answer.isEmpty) {
@@ -70,43 +72,18 @@ class _Question5State extends State<Question5> {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      // Prepare answers map
-      final answers = {
-        'businessType': widget.answer1,
-        'targetAudience': widget.answer2,
-        'productsServices': widget.answer3,
-        'brandTone': widget.answer4,
-        'mainGoals': answer,
-      };
-
-      // Save to Firestore
-      await _authService.saveOnboardingAnswers(answers);
-
-      // Navigate to HomeScreen
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const Homescreen()),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error saving answers: ${e.toString()}')),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Question6(
+          answer1: widget.answer1,
+          answer2: widget.answer2,
+          answer3: widget.answer3,
+          answer4: widget.answer4,
+          answer5: answer,
+        ),
+      ),
+    );
   }
 
   @override
@@ -121,7 +98,7 @@ class _Question5State extends State<Question5> {
             children: [
               const SizedBox(height: 24),
               Text(
-                "The Last question",
+                "Nearly Done...",
                 style: GoogleFonts.poppins(
                   fontSize: 28,
                   fontWeight: FontWeight.w600,
@@ -129,28 +106,39 @@ class _Question5State extends State<Question5> {
               ),
               const SizedBox(height: 8),
               LinearProgressIndicator(
-                value: 1.0,
+                value: 0.83,
                 backgroundColor: Colors.grey.shade300,
                 color: Colors.green,
                 minHeight: 6,
               ),
               const SizedBox(height: 32),
               Text(
-                "What are your main goals with this app?",
+                "What is the tone or style of your brand?",
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               const SizedBox(height: 32),
-              // Pill buttons
-              ..._options.map(
-                (option) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _buildPillButton(option),
+              // Chaotic bubble layout
+              SizedBox(
+                height: 290,
+                child: Stack(
+                  children: _options.entries.map((entry) {
+                    return Positioned(
+                      top: entry.value['top'],
+                      left: entry.value['left'],
+                      child: _buildBubbleButton(
+                        entry.key,
+                        entry.value['size'],
+                        entry.value['fontSize'],
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 24),
+              // Custom option as pill button
               _buildPillButton('Custom Answer', isCustom: true),
               if (_showCustomField) ...[
                 const SizedBox(height: 16),
@@ -176,17 +164,15 @@ class _Question5State extends State<Question5> {
                 width: double.infinity,
                 height: 50,
                 child: FloatingActionButton.extended(
-                  onPressed: _isLoading ? null : _submitAnswers,
-                  label: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : Text(
-                          "Submit",
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
+                  onPressed: _next,
+                  label: Text(
+                    "Next",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
                   backgroundColor: Colors.green,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
@@ -201,10 +187,39 @@ class _Question5State extends State<Question5> {
     );
   }
 
+  Widget _buildBubbleButton(String text, double size, double fontSize) {
+    final isSelected = _selectedOption == text;
+
+    return GestureDetector(
+      onTap: () => _selectOption(text),
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.green : Colors.grey.shade300,
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: fontSize,
+                fontWeight: FontWeight.w500,
+                color: isSelected ? Colors.white : Colors.black87,
+                height: 1.1,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildPillButton(String text, {bool isCustom = false}) {
-    final isSelected = isCustom
-        ? _selectedOption == 'Custom'
-        : _selectedOption == text;
+    final isSelected = isCustom && _selectedOption == 'Custom';
 
     return GestureDetector(
       onTap: isCustom ? _selectCustom : () => _selectOption(text),
