@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cocos_mobile_application/core/services/social_connection_service.dart';
 import 'package:cocos_mobile_application/features/social/connect_social_page.dart';
-import 'package:cocos_mobile_application/features/dashboard/home_screen.dart';
+import 'package:cocos_mobile_application/features/dashboard/HomeScreen.dart';
 
 class WeeklyReachPage extends StatelessWidget {
   const WeeklyReachPage({super.key});
