@@ -3,15 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cocos_mobile_application/features/social/connect_social_page.dart';
 import 'package:cocos_mobile_application/core/services/auth_service.dart';
-<<<<<<< HEAD
-import 'package:cocos_mobile_application/features/onboarding/welcomePage.dart';
+import 'package:cocos_mobile_application/features/onboarding/welcome_page.dart';
 import 'package:cocos_mobile_application/features/dashboard/Dashboard.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-=======
 import 'package:cocos_mobile_application/features/onboarding/welcome_page.dart';
 import 'package:cocos_mobile_application/features/dashboard/dashboard.dart';
->>>>>>> f6c78c94e720d7358fe8ee55ce3975c649576953
 
 class Settings extends StatelessWidget {
   const Settings({super.key});

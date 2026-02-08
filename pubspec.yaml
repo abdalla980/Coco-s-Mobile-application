@@ -56,17 +56,13 @@ dependencies:
   flutter_dotenv: ^5.2.1
 
   # AI Caption Generation
-<<<<<<< HEAD
-  google_generative_ai: ^0.4.6
   url_launcher: ^6.3.2
-=======
   google_generative_ai: ^0.4.7
 
   # Architecture
   get_it: ^8.0.0
   flutter_riverpod: ^2.6.1
   go_router: ^14.8.1
->>>>>>> f6c78c94e720d7358fe8ee55ce3975c649576953
 
 dev_dependencies:
   mocktail: ^1.0.4
