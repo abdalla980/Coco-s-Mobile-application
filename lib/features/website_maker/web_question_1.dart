@@ -24,7 +24,7 @@ class webQuestion1 extends StatelessWidget {
                 border: Border.all(color: Colors.green, width: 2),
               ),
               child: Text(
-                "1.Do you already need a new website or do you want a relaunch?",
+                "1.Do you need a new website or do you want a relaunch?",
                 style: GoogleFonts.poppins(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
