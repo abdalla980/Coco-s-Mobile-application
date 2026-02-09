@@ -112,13 +112,13 @@ class AuthService {
   }
 
   // Stream of user data from Firestore
-  Stream<Map<String, dynamic>?> getUserDataStream() {
-    final user = _auth.currentUser;
-    if (user == null) return Stream.value(null);
+  Stream<Map<String, dynamic>?> getUserDataStream([String? uid]) {
+    final targetUid = uid ?? _auth.currentUser?.uid;
+    if (targetUid == null) return Stream.value(null);
 
     return _firestore
         .collection('users')
-        .doc(user.uid)
+        .doc(targetUid)
         .snapshots()
         .map((snapshot) => snapshot.data());
   }

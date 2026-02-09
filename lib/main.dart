@@ -37,11 +37,16 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
 
+    // Extract user ID for the key - forces MaterialApp to recreate when auth changes
+    final userId = authState.whenData((user) => user?.uid).value;
+
     return MaterialApp(
+      key: ValueKey(userId), // Forces complete rebuild when user changes
       debugShowCheckedModeBanner: false,
       title: 'Cocos App',
       home: authState.when(
         data: (user) {
+          debugPrint('Main: Auth State Change. User: ${user?.uid}');
           if (user == null) {
             return const LoginScreen();
           }

@@ -1,15 +1,17 @@
+import 'package:cocos_mobile_application/core/providers/providers.dart';
 import 'package:cocos_mobile_application/features/onboarding/questions/question_1.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Welcomepage extends StatelessWidget {
+class Welcomepage extends ConsumerWidget {
   const Welcomepage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    final String userName = user?.displayName ?? "User";
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userData = ref.watch(userDataProvider);
+    final String userName =
+        userData.whenData((data) => data?['name'] as String?).value ?? "User";
 
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
@@ -21,7 +23,7 @@ class Welcomepage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 40),
-                
+
                 // Welcome Icon
                 Container(
                   width: 120,
@@ -29,10 +31,7 @@ class Welcomepage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.green.shade50,
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.green,
-                      width: 3,
-                    ),
+                    border: Border.all(color: Colors.green, width: 3),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.green.withOpacity(0.2),
@@ -48,7 +47,7 @@ class Welcomepage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 32),
-                
+
                 // Welcome Text
                 Text(
                   "Welcome,",
@@ -68,7 +67,7 @@ class Welcomepage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 48),
-                
+
                 // Info Card
                 Container(
                   width: double.infinity,
@@ -76,10 +75,7 @@ class Welcomepage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: Colors.green.shade200,
-                      width: 2,
-                    ),
+                    border: Border.all(color: Colors.green.shade200, width: 2),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.green.withOpacity(0.1),
@@ -127,7 +123,7 @@ class Welcomepage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 48),
-                
+
                 // Features List
                 _buildFeatureItem(
                   icon: Icons.auto_graph,
@@ -144,7 +140,7 @@ class Welcomepage extends StatelessWidget {
                   text: "AI-Powered Recommendations",
                 ),
                 const SizedBox(height: 48),
-                
+
                 // Start Button
                 SizedBox(
                   width: double.infinity,
@@ -153,7 +149,9 @@ class Welcomepage extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const Question1()),
+                        MaterialPageRoute(
+                          builder: (context) => const Question1(),
+                        ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -190,19 +188,13 @@ class Welcomepage extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureItem({
-    required IconData icon,
-    required String text,
-  }) {
+  Widget _buildFeatureItem({required IconData icon, required String text}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.green.shade100,
-          width: 1.5,
-        ),
+        border: Border.all(color: Colors.green.shade100, width: 1.5),
       ),
       child: Row(
         children: [
@@ -213,11 +205,7 @@ class Welcomepage extends StatelessWidget {
               color: Colors.green.shade50,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(
-              icon,
-              size: 22,
-              color: Colors.green.shade700,
-            ),
+            child: Icon(icon, size: 22, color: Colors.green.shade700),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -235,5 +223,3 @@ class Welcomepage extends StatelessWidget {
     );
   }
 }
-
-

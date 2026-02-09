@@ -12,5 +12,13 @@ final authStateProvider = StreamProvider<User?>((ref) {
 });
 
 final userDataProvider = StreamProvider<Map<String, dynamic>?>((ref) {
-  return ref.watch(authServiceProvider).getUserDataStream();
+  final authState = ref.watch(authStateProvider);
+  return authState.when(
+    data: (user) {
+      if (user == null) return Stream.value(null);
+      return ref.watch(authServiceProvider).getUserDataStream(user.uid);
+    },
+    loading: () => Stream.value(null),
+    error: (_, __) => Stream.value(null),
+  );
 });

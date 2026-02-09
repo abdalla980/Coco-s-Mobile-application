@@ -1,15 +1,17 @@
+import 'package:cocos_mobile_application/core/providers/providers.dart';
 import 'package:cocos_mobile_application/core/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -36,13 +38,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _passwordController.text.trim(),
         _nameController.text.trim(),
       );
-      // Navigation is to be handled, or pop back to login to let stream update
-      // Since stream is in main, we should pop all the way back or the stream will auto redirect if we are listening in main.
-      // However, since we pushed Register on top of Login, and Login might be replaced by Home, we should probably just pop.
-      // Actually, if we are using StreamBuilder in Main, logging in (registration logs in auto) will trigger Main to rebuild.
-      // But we need to make sure we are not stuck on RegisterScreen.
+      // Success is handled by the listener below, or ensuring the pop happens.
+      // We kept the listener in build to ensure if auth state updates we pop.
+      // But manually popping here is also safe if the stack is correct.
       if (mounted) {
-        Navigator.pop(context); // Pop register screen
+        debugPrint('RegisterScreen: Registration successful. Popping.');
+        // Navigator.pop(context); // Let the listener handle it to be sure main.dart is ready?
+        // Actually, popping here is fine, but if main.dart hasn't updated, we see Login.
+        // Let's rely on the listener to authStateProvider.
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -59,6 +62,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Listen to authentication state
+    ref.listen(authStateProvider, (previous, next) {
+      next.whenData((user) {
+        if (user != null) {
+          if (mounted) {
+            debugPrint(
+              'RegisterScreen: Auth state confirmed user ${user.uid}. Navigating.',
+            );
+            // Ensure we are not just popping to Login, but that the app state has changed.
+            // If we pop, and main.dart rebuilds, we are good.
+            Navigator.of(context).popUntil((route) => route.isFirst);
+          }
+        }
+      });
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),

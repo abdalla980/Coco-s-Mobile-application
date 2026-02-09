@@ -322,12 +322,25 @@ class _PostPreviewPageState extends State<PostPreviewPage> {
                                   ),
                                 ),
                               )
-                            : const Center(child: CircularProgressIndicator())
+                            : _buildPlaceholder()
                       : kIsWeb
-                      ? Image.network(widget.imageFile.path, fit: BoxFit.cover)
+                      ? Image.network(
+                          widget.imageFile.path,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return _buildPlaceholder();
+                          },
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return _buildPlaceholder();
+                          },
+                        )
                       : Image.file(
                           File(widget.imageFile.path),
                           fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return _buildPlaceholder();
+                          },
                         ),
                 ),
                 // Play icon overlay for videos
@@ -567,6 +580,34 @@ class _PostPreviewPageState extends State<PostPreviewPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildPlaceholder() {
+    return Container(
+      color: Color(0xFF34495E),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              widget.isVideo ? Icons.videocam : Icons.image,
+              size: 80,
+              color: Colors.white.withOpacity(0.5),
+            ),
+            SizedBox(height: 16),
+            CircularProgressIndicator(color: Colors.white.withOpacity(0.7)),
+            SizedBox(height: 16),
+            Text(
+              'Loading ${widget.isVideo ? 'video' : 'image'}...',
+              style: GoogleFonts.poppins(
+                color: Colors.white.withOpacity(0.7),
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
